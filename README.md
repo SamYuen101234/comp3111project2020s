@@ -1,7 +1,7 @@
 # Super Team T-22
 ---
 
-<https://github.com/SamYuen101234/comp3111project2020s.git>
+> <https://github.com/SamYuen101234/comp3111project2020s.git>
 
 
 ### 1. YUEN Zhikun
@@ -12,13 +12,13 @@
 
 ### 2. XIE, Yulong
 ---
-> email: yxiear | github: alanxy | dev
+> email: yxiear | github: alanxy | dev branch:
 
 > Task 1 & Task 4
 
 ### 3. LAM, Tsz Chun
 ---
-> email:
+> email: tclamai | github: VincentLam386 | dev branch:
 
 > Task 5 & Task 6
 
