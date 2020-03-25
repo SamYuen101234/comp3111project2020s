@@ -12,7 +12,7 @@
 
 ### 2. XIE, Yulong
 ---
-> email: yxiear | github: alanxy | dev branch:
+> email: yxiear | github: alanxy | dev branch: task1
 
 > Task 1 & Task 4
 
