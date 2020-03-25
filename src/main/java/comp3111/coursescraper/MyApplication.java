@@ -52,7 +52,7 @@ public class MyApplication extends Application {
    		VBox root = (VBox) loader.load();
    		Scene scene =  new Scene(root);
    		stage.setScene(scene);
-   		stage.setTitle("Team T-00: Course Scraper");
+   		stage.setTitle("Team T-22: Course Scraper");
    		stage.show();
 	}
 
