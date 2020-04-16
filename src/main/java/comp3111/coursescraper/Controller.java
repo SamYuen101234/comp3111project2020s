@@ -18,6 +18,16 @@ import javafx.scene.paint.Color;
 
 import java.util.Random;
 import java.util.List;
+import java.util.Set;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.time.LocalTime;
+import java.util.Locale;
+import java.time.format.DateTimeFormatter;
+
+
 public class Controller {
 
     @FXML
@@ -87,6 +97,7 @@ public class Controller {
 
     @FXML
     void search() {
+    	textAreaConsole.clear();
     	List<Course> v = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),textfieldSubject.getText());
     	Set<String> allInstructor = new HashSet<String>();
     	Set<String> unavailableInstructor = new HashSet<String>();

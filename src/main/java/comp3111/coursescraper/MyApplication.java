@@ -50,7 +50,7 @@ public class MyApplication extends Application {
     	FXMLLoader loader = new FXMLLoader();
     	loader.setLocation(getClass().getResource(UI_FILE));
    		VBox root = (VBox) loader.load();
-   		Scene scene =  new Scene(root);
+   		Scene scene = new Scene(root);
    		stage.setScene(scene);
    		stage.setTitle("Team T-22: Course Scraper");
    		stage.show();
