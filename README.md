@@ -18,7 +18,7 @@
 
 ### 3. LAM, Tsz Chun
 ---
-> email: tclamai | github: VincentLam386 | dev branch:
+> email: tclamai | github: VincentLam386 | dev branch: vinc_feature0
 
 > Task 5 & Task 6
 
