@@ -105,6 +105,31 @@ public class Scraper {
 		}
 
 	}
+	
+	public List<String> scrapeSubject(String baseurl, String term){
+
+		try {
+			HtmlPage mainPage = client.getPage(baseurl + "/" + term + "/");
+			
+			List<?> subjectHTML = (List<?>) mainPage.getByXPath("//div[@class='depts']/a");
+			
+			Vector<String> subjects = new Vector<String>();
+			
+			for (HtmlElement e: (List<HtmlElement>) subjectHTML) {
+				String subj = new String();
+								
+				subj = e.asText();
+				
+				subjects.add(subj);
+			}
+			
+			return subjects;
+			
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+		return null;
+	}
 
 	public List<Course> scrape(String baseurl, String term, String sub) {
 
