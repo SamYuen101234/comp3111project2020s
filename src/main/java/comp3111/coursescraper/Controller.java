@@ -19,7 +19,6 @@ import javafx.scene.paint.Color;
 import java.util.Random;
 import java.util.List;
 public class Controller {
-	List<String> subjects;
 
     @FXML
     private Tab tabMain;
@@ -53,13 +52,7 @@ public class Controller {
 
     @FXML
     private Tab tabAllSubject;
-    
-    @FXML
-    private Button allSubjectSearch;
 
-    @FXML
-    private Button allCoursesSearch;
-    
     @FXML
     private ProgressBar progressbar;
 
@@ -79,27 +72,12 @@ public class Controller {
     
     @FXML
     void allSubjectSearch() {
-    	// Scrape all subjects from given URL and term
-    	subjects = scraper.scrapeSubject(textfieldURL.getText(), textfieldTerm.getText());
-  
-    	// Record and display the total no. of subjects
-    	textAreaConsole.setText("Total Number of Categories/Code Prefix: " + subjects.size());
     	
-    	// Enable the "All Courses Search" button
-    	allCoursesSearch.setDisable(false);	
-    }
-    
-    @FXML
-    void allCoursesSearch() {
-    	
-    	
-    	
-    	buttonInstructorSfq.setDisable(false);
     }
 
     @FXML
     void findInstructorSfq() {
-    	
+    	buttonInstructorSfq.setDisable(true);
     }
 
     @FXML
@@ -138,5 +116,5 @@ public class Controller {
     	
     	
     }
- 
+
 }
