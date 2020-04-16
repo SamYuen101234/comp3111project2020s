@@ -10,8 +10,6 @@ import java.util.Locale;
 import java.time.format.DateTimeFormatter;
 
 public class Slot {
-	private static final int DEFAULT_MAX_INSTRUCTOR = 30;
-	
 	private int day;
 	private LocalTime start;
 	private LocalTime end;
