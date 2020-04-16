@@ -1,23 +1,32 @@
 package comp3111.coursescraper;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.time.LocalTime;
 import java.util.Locale;
 import java.time.format.DateTimeFormatter;
 
 public class Slot {
+	private static final int DEFAULT_MAX_INSTRUCTOR = 30;
+	
 	private int day;
 	private LocalTime start;
 	private LocalTime end;
 	private String venue;
 	private String sectionID;
-	private String instructor;
+	private Set<String> instructor;
 	public static final String DAYS[] = {"Mo", "Tu", "We", "Th", "Fr", "Sa"};
 	public static final Map<String, Integer> DAYS_MAP = new HashMap<String, Integer>();
 	static {
 		for (int i = 0; i < DAYS.length; i++)
 			DAYS_MAP.put(DAYS[i], i);
+	}
+	
+	public Slot() {
+		instructor = new HashSet<String>();
 	}
 
 	@Override
@@ -33,7 +42,7 @@ public class Slot {
 	}
 	public String toString() {
 		if(start == null) return sectionID + ": TBA   " + venue + "   " + instructor;
-		return sectionID + ": " + DAYS[day] + start.toString() + "-" + end.toString() + "   " + venue + "   " + instructor;
+		return sectionID + ": " + DAYS[day] + start.toString() + "-" + end.toString() + "   " + venue;
 	}
 	public int getStartHour() {
 		return start.getHour();
@@ -105,12 +114,11 @@ public class Slot {
 		return this.sectionID;
 	}
 	
-	public void setInstructor(String name) {
-		System.out.println(name);
-		this.instructor = name;
+	public void addInstructor(String name) {
+		this.instructor.add(name);
 	}
 	
-	public String getInstructor() {
+	public Set<String> getAllInstructor() {
 		return this.instructor;
 	}
 

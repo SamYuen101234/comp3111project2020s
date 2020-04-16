@@ -13,6 +13,7 @@ import com.gargoylesoftware.htmlunit.html.DomText;
 import java.util.Vector;
 
 
+
 /**
  * WebScraper provide a sample code that scrape web content. After it is constructed, you can call the method scrape with a keyword, 
  * the client will go to the default url and parse the page by looking at the HTML DOM.  
@@ -88,22 +89,34 @@ public class Scraper {
 	}
 
 	private void addSlot(HtmlElement e, Course c, boolean secondRow) {
+		
+		//Times
 		String times[] =  e.getChildNodes().get(secondRow ? 0 : 3).asText().split("\n");
 		//Handle time with dates
 		if(times.length != 1) times = times[1].split(" ");
 		else times = times[0].split(" ");
+		
+		//Venue
 		String venue = e.getChildNodes().get(secondRow ? 1 : 4).asText();
-		String instructor = e.getChildNodes().get(secondRow ? 2 : 5).getChildNodes().get(0).getTextContent();
 		int index_temp = venue.indexOf("(");
 		if(index_temp >=0) venue = venue.substring(0, index_temp-1);
+		
+		//Instructor
+		DomNodeList<DomNode> temp = e.getChildNodes().get(secondRow ? 2 : 5).getChildNodes();
+		
+		//Section
 		String sectionID = "";
 		if(!secondRow) sectionID = e.getChildNodes().get(1).asText();
 		else sectionID = c.getSlot(c.getNumSlots()-1).getSectionID();
+		
+		//Add to course list
 		if (times[0].equals("TBA")) {
 			Slot s = new Slot();
 			s.setVenue(venue);
 			s.setSectionID(sectionID);
-			s.setInstructor(instructor);
+			for(int i = 0; i < temp.getLength(); i += 2) {
+				s.addInstructor(temp.get(i).getTextContent());
+			}
 			c.addSlot(s);
 		}
 		else {
@@ -117,7 +130,9 @@ public class Scraper {
 				s.setEnd(times[3]);
 				s.setVenue(venue);
 				s.setSectionID(sectionID);
-				s.setInstructor(instructor);
+				for(int i = 0; i < temp.getLength(); i += 2) {
+					s.addInstructor(temp.get(i).getTextContent());
+				}
 				c.addSlot(s);
 			}
 		}
