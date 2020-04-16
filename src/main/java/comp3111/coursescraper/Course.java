@@ -23,6 +23,7 @@ public class Course {
 			return;
 		slots[numSlots++] = s.clone();
 	}
+	
 	public Slot getSlot(int i) {
 		if (i >= 0 && i < numSlots)
 			return slots[i];

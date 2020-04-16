@@ -133,7 +133,6 @@ public class Controller {
 	    		additionalInfo += availableInstructor.get(i) + "\n";
 	    	}
 	    	
-	    	
 	    	textAreaConsole.setText(textAreaConsole.getText() + "\n" + additionalInfo);
     	}
     	
@@ -152,8 +151,6 @@ public class Controller {
     	randomLabel.setMaxHeight(60);
     
     	ap.getChildren().addAll(randomLabel);
-    	
-    	
     	
     }
 
