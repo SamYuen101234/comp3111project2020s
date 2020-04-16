@@ -3,14 +3,13 @@ package comp3111.coursescraper;
 
 
 public class Course {
-	private static final int DEFAULT_MAX_SLOT = 100;
+	private static final int DEFAULT_MAX_SLOT = 20;
 	
 	private String title ; 
 	private String description ;
 	private String exclusion;
 	private Slot [] slots;
 	private int numSlots;
-	private boolean isCC;
 	
 	public Course() {
 		slots = new Slot[DEFAULT_MAX_SLOT];
@@ -86,12 +85,5 @@ public class Course {
 		this.numSlots = numSlots;
 	}
 	
-	public void isCC(boolean bool) {
-		this.isCC = bool;
-	}
-	
-	public boolean checkCC() {
-		return this.isCC;
-	}
 
 }

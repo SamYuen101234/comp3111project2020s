@@ -13,7 +13,6 @@ import com.gargoylesoftware.htmlunit.html.DomText;
 import java.util.Vector;
 
 
-
 /**
  * WebScraper provide a sample code that scrape web content. After it is constructed, you can call the method scrape with a keyword, 
  * the client will go to the default url and parse the page by looking at the HTML DOM.  
@@ -89,105 +88,69 @@ public class Scraper {
 	}
 
 	private void addSlot(HtmlElement e, Course c, boolean secondRow) {
-		
-		//Times
-		String times[] =  e.getChildNodes().get(secondRow ? 0 : 3).asText().split("\n");
-		//Handle time with dates
-		if(times.length != 1) times = times[1].split(" ");
-		else times = times[0].split(" ");
-		
-		//Venue
+		String times[] =  e.getChildNodes().get(secondRow ? 0 : 3).asText().split(" ");
 		String venue = e.getChildNodes().get(secondRow ? 1 : 4).asText();
-		int index_temp = venue.indexOf("(");
-		if(index_temp >=0) venue = venue.substring(0, index_temp-1);
-		
-		//Instructor
-		DomNodeList<DomNode> temp = e.getChildNodes().get(secondRow ? 2 : 5).getChildNodes();
-		
-		//Section
-		String sectionID = "";
-		if(!secondRow) sectionID = e.getChildNodes().get(1).asText();
-		else sectionID = c.getSlot(c.getNumSlots()-1).getSectionID();
-		
-		//Add to course list
-		if (times[0].equals("TBA")) {
+		if (times[0].equals("TBA"))
+			return;
+		for (int j = 0; j < times[0].length(); j+=2) {
+			String code = times[0].substring(j , j + 2);
+			if (Slot.DAYS_MAP.get(code) == null)
+				break;
 			Slot s = new Slot();
+			s.setDay(Slot.DAYS_MAP.get(code));
+			s.setStart(times[1]);
+			s.setEnd(times[3]);
 			s.setVenue(venue);
-			s.setSectionID(sectionID);
-			for(int i = 0; i < temp.getLength(); i += 2) {
-				s.addInstructor(temp.get(i).getTextContent());
-			}
-			c.addSlot(s);
+			c.addSlot(s);	
 		}
-		else {
-			for (int j = 0; j < times[0].length(); j+=2) {
-				String code = times[0].substring(j , j + 2);
-				if (Slot.DAYS_MAP.get(code) == null)
-					break;
-				Slot s = new Slot();
-				s.setDay(Slot.DAYS_MAP.get(code));
-				s.setStart(times[1]);
-				s.setEnd(times[3]);
-				s.setVenue(venue);
-				s.setSectionID(sectionID);
-				for(int i = 0; i < temp.getLength(); i += 2) {
-					s.addInstructor(temp.get(i).getTextContent());
-				}
-				c.addSlot(s);
-			}
-		}
-		
+
 	}
 
 	public List<Course> scrape(String baseurl, String term, String sub) {
-		
-		HtmlPage page;
 
 		try {
 			
-			page = client.getPage(baseurl + "/" + term + "/subject/" + sub);
-			
-		} catch(Exception e) {
-			System.out.println(e);
-			return null;
-		}
-			
-		List<?> items = (List<?>) page.getByXPath("//div[@class='course']");
-		
-		Vector<Course> result = new Vector<Course>();
+			HtmlPage page = client.getPage(baseurl + "/" + term + "/subject/" + sub);
 
-		for (int i = 0; i < items.size(); i++) {
-			Course c = new Course();
-			HtmlElement htmlItem = (HtmlElement) items.get(i);
 			
-			HtmlElement title = (HtmlElement) htmlItem.getFirstByXPath(".//h2");
-			c.setTitle(title.asText());
+			List<?> items = (List<?>) page.getByXPath("//div[@class='course']");
 			
-			List<?> popupdetailslist = (List<?>) htmlItem.getByXPath(".//div[@class='popupdetail']/table/tbody/tr");
-			HtmlElement exclusion = null;
-			c.isCC(false);
-			for ( HtmlElement e : (List<HtmlElement>)popupdetailslist) {
-				HtmlElement t = (HtmlElement) e.getFirstByXPath(".//th");
-				HtmlElement d = (HtmlElement) e.getFirstByXPath(".//td");
-				if (d.asText().contains("Common Core")) c.isCC(true);
-				if (t.asText().equals("EXCLUSION")) {
-					exclusion = d;
+			Vector<Course> result = new Vector<Course>();
+
+			for (int i = 0; i < items.size(); i++) {
+				Course c = new Course();
+				HtmlElement htmlItem = (HtmlElement) items.get(i);
+				
+				HtmlElement title = (HtmlElement) htmlItem.getFirstByXPath(".//h2");
+				c.setTitle(title.asText());
+				
+				List<?> popupdetailslist = (List<?>) htmlItem.getByXPath(".//div[@class='popupdetail']/table/tbody/tr");
+				HtmlElement exclusion = null;
+				for ( HtmlElement e : (List<HtmlElement>)popupdetailslist) {
+					HtmlElement t = (HtmlElement) e.getFirstByXPath(".//th");
+					HtmlElement d = (HtmlElement) e.getFirstByXPath(".//td");
+					if (t.asText().equals("EXCLUSION")) {
+						exclusion = d;
+					}
 				}
+				c.setExclusion((exclusion == null ? "null" : exclusion.asText()));
+				
+				List<?> sections = (List<?>) htmlItem.getByXPath(".//tr[contains(@class,'newsect')]");
+				for ( HtmlElement e: (List<HtmlElement>)sections) {
+					addSlot(e, c, false);
+					e = (HtmlElement)e.getNextSibling();
+					if (e != null && !e.getAttribute("class").contains("newsect"))
+						addSlot(e, c, true);
+				}
+				
+				result.add(c);
 			}
-			c.setExclusion((exclusion == null ? "null" : exclusion.asText()));
-			
-			List<?> sections = (List<?>) htmlItem.getByXPath(".//tr[contains(@class,'newsect')]");
-			for ( HtmlElement e: (List<HtmlElement>)sections) {
-				addSlot(e, c, false);
-				e = (HtmlElement)e.getNextSibling();
-				if (e != null && !e.getAttribute("class").contains("newsect"))
-					addSlot(e, c, true);
-			}
-			
-			result.add(c);
+			client.close();
+			return result;
+		} catch (Exception e) {
+			System.out.println(e);
 		}
-		client.close();
-		return result;
+		return null;
 	}
 
 }
