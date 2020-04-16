@@ -88,13 +88,28 @@ public class Controller {
     @FXML
     void search() {
     	List<Course> v = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),textfieldSubject.getText());
-    	for (Course c : v) {
-    		String newline = c.getTitle() + "\n";
-    		for (int i = 0; i < c.getNumSlots(); i++) {
-    			Slot t = c.getSlot(i);
-    			newline += "Slot " + i + ":" + t + "\n";
-    		}
-    		textAreaConsole.setText(textAreaConsole.getText() + "\n" + newline);
+    	if(v == null) textAreaConsole.setText("404 Not Found: Invalid base URL or term or subject");
+    	else {
+    		int noOfSection = 0;
+	    	for (Course c : v) {
+	    		String SID = "";
+	    		String newline = c.getTitle() + "\n";
+	    		for (int i = 0; i < c.getNumSlots(); i++) {
+	    			Slot t = c.getSlot(i);
+	    			newline += t + "\n";
+	    			if(SID != t.getSectionID()) {
+	    				++noOfSection;
+	    				SID = t.getSectionID();
+	    			}
+	    		}
+	    		
+	    		textAreaConsole.setText(textAreaConsole.getText() + "\n" + newline);
+	    	}
+	    	String additionalInfo = "";
+	    	additionalInfo += "Total number of different sections: " + Integer.toString(noOfSection) + "\n";
+	    	additionalInfo += "Total number of course: " + Integer.toString(v.size()) + "\n";
+	    	textAreaConsole.setText(textAreaConsole.getText() + "\n" + additionalInfo);
+	    	
     	}
     	
     	//Add a random block on Saturday

@@ -11,6 +11,8 @@ public class Slot {
 	private LocalTime start;
 	private LocalTime end;
 	private String venue;
+	private String sectionID;
+	private String instructor;
 	public static final String DAYS[] = {"Mo", "Tu", "We", "Th", "Fr", "Sa"};
 	public static final Map<String, Integer> DAYS_MAP = new HashMap<String, Integer>();
 	static {
@@ -25,10 +27,13 @@ public class Slot {
 		s.start = this.start;
 		s.end = this.end;
 		s.venue = this.venue;
+		s.sectionID = this.sectionID;
+		s.instructor = this.instructor;
 		return s;
 	}
 	public String toString() {
-		return DAYS[day] + start.toString() + "-" + end.toString() + ":" + venue;
+		if(start == null) return sectionID + ": TBA   " + venue + "   " + instructor;
+		return sectionID + ": " + DAYS[day] + start.toString() + "-" + end.toString() + "   " + venue + "   " + instructor;
 	}
 	public int getStartHour() {
 		return start.getHour();
@@ -90,6 +95,23 @@ public class Slot {
 	 */
 	public void setDay(int day) {
 		this.day = day;
+	}
+	
+	public void setSectionID(String id) {
+		this.sectionID = id;
+	}
+	
+	public String getSectionID() {
+		return this.sectionID;
+	}
+	
+	public void setInstructor(String name) {
+		System.out.println(name);
+		this.instructor = name;
+	}
+	
+	public String getInstructor() {
+		return this.instructor;
 	}
 
 }
