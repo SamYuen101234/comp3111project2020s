@@ -84,5 +84,4 @@ public class Course {
 		this.numSlots = numSlots;
 	}
 	
-
 }

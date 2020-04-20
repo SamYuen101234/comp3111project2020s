@@ -9,8 +9,12 @@ import com.gargoylesoftware.htmlunit.html.DomNodeList;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlTable;
 import com.gargoylesoftware.htmlunit.html.DomText;
 import java.util.Vector;
+import java.util.HashMap;
+import java.util.TreeMap;
+import java.util.HashSet;
 
 
 /**
@@ -105,6 +109,32 @@ public class Scraper {
 		}
 
 	}
+	
+	public List<String> scrapeSubject(String baseurl, String term){
+
+		try {
+			HtmlPage mainPage = client.getPage(baseurl + "/" + term + "/");
+
+			List<?> subjectHTML = (List<?>) mainPage.getByXPath("//div[@class='depts']/a");
+
+			Vector<String> subjects = new Vector<String>();
+
+			for (HtmlElement e: (List<HtmlElement>) subjectHTML) {
+				String subj = new String();
+
+				subj = e.asText();
+
+				subjects.add(subj);
+			}
+
+			return subjects;
+
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+		return null;
+	}
+
 
 	public List<Course> scrape(String baseurl, String term, String sub) {
 
@@ -152,5 +182,213 @@ public class Scraper {
 		}
 		return null;
 	}
+	
+	private List<String> getSFQSubject(HtmlElement subjectTable){
+		List<?> link = (List<?>) subjectTable.getByXPath(".//a");
+		Vector<String> subjects = new Vector<String>();
+		
+		for(HtmlAnchor a: (List<HtmlAnchor>)link){
+			String l = a.getHrefAttribute();
+			if (!l.equals("#notes")) {
+				subjects.add(l.substring(1));
+			}
+		}
+		
+		return subjects;
+	}
+	
+	private HtmlElement getNextTable(HtmlElement curr) {
+		HtmlElement target = (HtmlElement) curr.getNextElementSibling();
+		while(!target.getClass().getName().equals("com.gargoylesoftware.htmlunit.html.HtmlTable")) {
+			target = (HtmlElement) curr.getNextElementSibling();
+			curr = target;
+		}
+		return target;
+	}
+	
+	private List<HtmlElement> getAllSubjectsSFQTable(String baseurl){
+		try {
+			HtmlPage page = client.getPage(baseurl);
+			
+			// Get the table containing all subjects' ID
+			HtmlElement dummy = (HtmlElement) page.getFirstByXPath("//table[@*]");
+			HtmlElement subjectsList = getNextTable(dummy);
+
+			// Get all subjects' ID
+			List<String> subjects = getSFQSubject(subjectsList);
+			
+			// Find the table for each subject in subjects
+			Vector<HtmlElement> allSubjects = new Vector<HtmlElement>();
+			for(String s: subjects) {
+				HtmlElement sub = (HtmlElement) page.getFirstByXPath("//b[@id='" + s + "']");
+				HtmlElement subTable = getNextTable(sub);
+				
+				allSubjects.add(subTable);
+			}
+			
+			return allSubjects;
+			
+		} catch (Exception e) {
+			return null;
+		}		
+	}
+	
+	public HashMap<String,Float> scrapeCoursesSFQ(String baseurl, HashSet<String> enrolled) {
+		List<HtmlElement> allSubjects = getAllSubjectsSFQTable(baseurl);
+		if(allSubjects==null)
+			return null;
+		
+		HashMap<String,Float> input = new HashMap<String,Float>();
+		Float sfqTotal;
+		Integer number;
+		
+		for(HtmlElement e: allSubjects) {
+			HtmlElement tr = e.getFirstByXPath(".//tr");
+			
+			// Find the row that would contain a course and its section (1st requirement: every row start with <tr> only)
+			while(!tr.asText().equals("HtmlTableRow[<tr>]") && tr.getAttribute("style").equals("")) {
+				// (2nd requirement: the first column should have colspan=3 to contain the course title)
+				HtmlElement td = tr.getFirstByXPath(".//td[@colspan='3']");
+				if(td != null) {
+					String course = td.getChildNodes().get(0).asText();
+					course = course.substring(1,course.length()-1);
+					// (3rd requirement: second column should contain the course title, and it should match the enrolled course)
+					if(enrolled.contains(course)) {
+						sfqTotal = 0F; number = 0;
+						// (4th requirement: any row below should not contain colspan=3)
+						HtmlElement tr3 = (HtmlElement) tr.getNextElementSibling();
+						while(tr3.getFirstByXPath(".//td[@colspan='3']")==null) {
+							// (5th requirement: the first column should contain only whitespace)
+							td = tr3.getFirstByXPath(".//td");
+							if(td.getChildNodes().get(0).asText().equals(" ")) {
+								// (6th requirement: the second column should contain the course section)
+								HtmlElement td2 = (HtmlElement) td.getNextElementSibling();
+								if(!td2.getChildNodes().get(0).asText().equals(" ")) {
+									td = (HtmlElement) td2.getNextElementSibling();
+									td2 = (HtmlElement) td.getNextElementSibling();
+									String sfqString = td2.getChildNodes().get(0).asText().substring(0,4);
+									if(sfqString.equals("-(-)")){
+										// if sfq is initially null, ignore it
+										if(sfqTotal!=null) {
+											// if it is the first sfq entry, set sfq to null
+											if(sfqTotal==0F) {
+												sfqTotal = null;
+											}
+										}
+									}
+									else {
+										// if sfq is not null, increment the section by 1, and add up the sfq score
+										++number;
+										if(sfqTotal==null) {
+											sfqTotal = Float.valueOf(sfqString);
+										}
+										else {
+											sfqTotal += Float.valueOf(sfqString);
+										}
+									} // end if									
+								} // end if
+							} // end if 
+							tr = (HtmlElement) tr3.getNextElementSibling();
+							tr3 = tr;
+						} // end while
+						Float average;
+						if(sfqTotal==null) {
+							average = null;
+						}
+						else {
+							average = sfqTotal/number;
+						}
+						input.put(course, average);
+						tr = (HtmlElement) tr3.getPreviousElementSibling();						
+					} // end if				
+				} // end if	
+				HtmlElement tr2 = (HtmlElement) tr.getNextElementSibling();
+				tr = tr2;
+			} // end while
+		} // end for
+		
+		
+		return input;
+	}
+	
+	
+	public HashMap<String,Vector<Float>> scrapeInstructorSFQ(String baseurl){
+		List<HtmlElement> allSubjects = getAllSubjectsSFQTable(baseurl);
+		
+		if(allSubjects==null)
+			return null;
+		HashMap<String,Vector<Float>> input = new HashMap<String,Vector<Float>>();
+		
+		// Find instructors in each subjects and their corresponding SFQ, and put into the HashMap input
+		for(HtmlElement e: allSubjects) {
+			HtmlElement tr = e.getFirstByXPath(".//tr");
+			
+			// Find the row that would contain instructor name (1st requirement: every row start with <tr> only)
+			while(!tr.asText().equals("HtmlTableRow[<tr>]") && tr.getAttribute("style").equals("")) {
+				HtmlElement td = tr.getFirstByXPath(".//td");
+				// (2nd requirement: the row should contain <td>)
+				if(td != null) {
+					// (3rd requirement: first column should have only white space)
+					if(td.getChildNodes().get(0).asText().equals(" ")) {
+						HtmlElement td2 = (HtmlElement) td.getNextElementSibling();
+						// (4th requirement: second column should have only white space)
+						if(td2.getChildNodes().get(0).asText().equals(" ")) {
+							td = (HtmlElement) td2.getNextElementSibling();
+							String te = td.getChildNodes().get(0).asText();
+							te = te.substring(1,te.length()-1);
+							// (5th requirement: third column should contain instructor's name)
+							if(!te.isEmpty()) {
+								// Get the instructor SFQ rating
+								td2 = (HtmlElement) td.getNextElementSibling();
+								td = (HtmlElement) td2.getNextElementSibling();
+								// Extract only the value not in bracket, and change to float
+								String temp = td.getChildNodes().get(0).asText().substring(0,4);
+								Float sfq;
+								if(temp.equals("-(-)")) {
+									sfq = null;
+								}
+								else {
+									sfq = Float.valueOf(temp);
+								}
+								
+								Vector<Float> value = input.get(te);
+								if(value==null) { // instructor not appeared before
+									// Initialize the vector with [SFQ rating, no. of sections teach]
+									Vector<Float> sfqAndCourseNo = new Vector<Float>(2);
+									sfqAndCourseNo.add(sfq);
+									if(sfq==null) {
+										sfqAndCourseNo.add(0F);
+									}
+									else {
+										sfqAndCourseNo.add(1F);
+									}
+									// Put the entry into the HashMap
+									input.put(te,sfqAndCourseNo);									
+								}
+								else { // instructor appeared before
+									if(sfq!=null) {
+										// Add up the SFQ
+										if(value.get(0)==null) {
+											value.set(0, sfq);
+										}
+										else {
+											value.set(0, value.get(0)+sfq);
+										}
+										// Increment the number of courses teaches by 1
+										value.set(1, value.get(1)+1);	
+									}
+								} // end if
+							} // end if 							
+						} // end if
+					} // end if						
+				} // end if 
+				HtmlElement tr2 = (HtmlElement) tr.getNextElementSibling();
+				tr = tr2;
+			} // end while
+		} // end for
+		return input;
+	} // end function
+	
+	
 
 }
