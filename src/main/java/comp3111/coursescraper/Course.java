@@ -93,5 +93,4 @@ public class Course {
 	public boolean checkCC() {
 		return this.isCC;
 	}
-
 }
