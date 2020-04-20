@@ -42,6 +42,6 @@ public class FxTest extends ApplicationTest {
 		//clickOn("#buttonInstructorSfq");
 		Button b = (Button)s.lookup("#buttonSfqEnrollCourse");
 		sleep(1000);
-		assertTrue(b.isDisabled());
+		assertFalse(b.isDisabled());
 	}
 }
