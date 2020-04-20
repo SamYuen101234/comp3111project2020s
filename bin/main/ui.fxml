@@ -143,7 +143,7 @@
                               <Label layoutX="45.0" layoutY="118.0" text="*Search all subjects when this button is click. (text typed in textfieldSubject is ignored)" />
                               <Label layoutX="45.0" layoutY="144.0" text="*Progress bar will be updated whenever a subject has been scraped." />
                               <Label layoutX="45.0" layoutY="176.0" text="*correctly print the following info to the console below" />
-                          	  <Button fx:id="allCoursesSearch" disable="true" layoutX="72.0" layoutY="71.0" mnemonicParsing="false" onAction="#allCoursesSearch" text="All Courses Search" />
+                          	  <Button fx:id="allCoursesSearch" layoutX="72.0" layoutY="71.0" mnemonicParsing="false" onAction="#allCoursesSearch" text="All Courses Search" />
                            </children>
                         </AnchorPane>
                     </content>
@@ -153,9 +153,9 @@
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
                               <Label layoutX="82.0" layoutY="31.0" text="SFQ URL" />
-                              <TextField fx:id="textfieldSfqUrl" layoutX="147.0" layoutY="27.0" prefHeight="25.0" prefWidth="403.0" text="http://sfq.ust.hk/results/eng-f19.html " />
-                              <Button fx:id="buttonSfqEnrollCourse" layoutX="147.0" layoutY="64.0" mnemonicParsing="false" onAction="#findSfqEnrollCourse" text="Find SFQ with my enrolled courses" />
-                              <Button fx:id="buttonInstructorSfq" disable="true" layoutX="384.0" layoutY="64.0" mnemonicParsing="false" onAction="#findInstructorSfq" text="List instructors' average SFQ" />
+                              <TextField fx:id="textfieldSfqUrl" layoutX="147.0" layoutY="27.0" prefHeight="25.0" prefWidth="403.0" text="file:///C:/Users/vinca/Desktop/School%20Summary%20Report.html" />
+                              <Button fx:id="buttonSfqEnrollCourse" disable="true" layoutX="147.0" layoutY="64.0" mnemonicParsing="false" onAction="#findSfqEnrollCourse" text="Find SFQ with my enrolled courses" />
+                              <Button fx:id="buttonInstructorSfq" layoutX="384.0" layoutY="64.0" mnemonicParsing="false" onAction="#findInstructorSfq" text="List instructors' average SFQ" />
                               <Label layoutX="42.0" layoutY="132.0" text="You may assume no login is required when you scrape the SFQ page" />
                               <Label layoutX="42.0" layoutY="176.0" prefHeight="44.0" prefWidth="601.0" text="When Find SFQ button is clicked, unadjusted SFQ data will be printed (not the data inside [] ). If a course has multiple section,s only the course average is needed." wrapText="true" />
                               <Label layoutX="42.0" layoutY="233.0" prefHeight="72.0" prefWidth="622.0" text="When List instructors average button is clicked, all unadjusted SFQ data of sections taught by an instructor will be added and divided by the number of sections he/she taught. Thus, there is no need to consider the number of students. We assume there will be no lab/tutorial section on this page." wrapText="true" />

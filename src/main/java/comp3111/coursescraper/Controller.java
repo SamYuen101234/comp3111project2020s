@@ -18,6 +18,12 @@ import javafx.scene.paint.Color;
 
 import java.util.Random;
 import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import java.util.HashMap;
+import java.util.TreeMap;
+import java.util.HashSet;
+
 public class Controller {
 	List<String> subjects;
 
@@ -84,28 +90,120 @@ public class Controller {
 
     	// Record and display the total no. of subjects
     	textAreaConsole.setText("Total Number of Categories/Code Prefix: " + subjects.size());
-
-    	// Enable the "All Courses Search" button
-    	allCoursesSearch.setDisable(false);	
     }
 
     @FXML
     void allCoursesSearch() {
+    	// Scrape all subjects from given URL and term
+    	subjects = scraper.scrapeSubject(textfieldURL.getText(), textfieldTerm.getText());
+    	
+    	// Scrape all courses in each subject in subjects
+    	Vector<Course> allCourses = new Vector<Course>();
+    	for (String s: subjects) {
+    		// List<Course> courses = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),textfieldSubject.getText());
+    		// allCoureses.append???
+    		
+    		// Print "SUBJECT is done" on console (size of subjects list)
+    		
+    		
+    		// Update progress bar by 1/(total no. of subjects)
+    		
+    		
+    	}
+    	// Print total no. of courses in console (size of allCourses list)
+    	
+    	
+    	
+    	// Call "Select all" function in "Filter" tab
+    	
+    	
+    	// Pass allCourses to "Main"
+    	
+    	
+    	// Change "Main" tab text input in "Subject" to "(All Subjects)"
+    	
+    	
 
-
-
-    	buttonInstructorSfq.setDisable(false);
+    	// Enables the "Find SFQ with my enrolled courses" button
+    	buttonSfqEnrollCourse.setDisable(false);
     }
 
 
     @FXML
     void findInstructorSfq() {
+    	// Clean up console 
+    	textAreaConsole.clear();
     	
+    	// Scrape instructors list together with their average SFQ from the URL
+    	HashMap<String,Vector<Float>> instructors = scraper.scrapeInstructorSFQ(textfieldSfqUrl.getText());
+    	
+    	// Display wrong web-page in console if return value is null
+    	if (instructors == null) {
+    		textAreaConsole.setText("The inputted URL is not valid");
+    	}
+    	else {
+    		// Sort instructors according alphabetical order in the format of "LAST_NAME, FIRST_NAME"
+    		TreeMap<String,Vector<Float>> sortInstructors = new TreeMap<>(instructors);
+    	
+    		// Display result in console
+    		for (Map.Entry<String,Vector<Float>> entry: sortInstructors.entrySet()) {
+    			// Calculate the average SFQ rating
+    			if(entry.getValue().get(0)==null) {
+    				textAreaConsole.setText(textAreaConsole.getText() + entry.getKey() + ": (had no SFQ rating available)\n");
+    			} else {
+    				entry.getValue().set(0, entry.getValue().get(0)/entry.getValue().get(1));
+        			String instructor = entry.getKey() + ": " + String.valueOf((float)Math.round(entry.getValue().get(0)*10)/10 + "%\n");
+        			textAreaConsole.setText(textAreaConsole.getText() + instructor);
+    			}
+    		}
+    	}
     }
 
     @FXML
     void findSfqEnrollCourse() {
-
+    	// Clean up console 
+    	textAreaConsole.clear();
+    	
+    	// Retrieve enrolled course
+    	Vector<Course> enrolled = new Vector<Course>();
+    	Vector<Course> testEmpty = new Vector<Course>();
+    	Course c1 = new Course();Course c2 = new Course();Course c3 = new Course();Course c4 = new Course();Course c5 = new Course();Course c6 = new Course();
+    	c1.setTitle("COMP 1029C");c2.setTitle("ELEC 1100");c3.setTitle("MECH 4720");c4.setTitle("ELEC 1200");c5.setTitle("COMP 3111H");c6.setTitle("IEDA 6100A");
+    	enrolled.add(c1);enrolled.add(c2);enrolled.add(c3);enrolled.add(c4);enrolled.add(c5);enrolled.add(c6);
+    	
+    	// if the enrolled course list is empty, tell the user that there is no enrolled course, and do nothing else
+    	//if(Empty.isEmpty()){
+    	if(enrolled.isEmpty()) {
+    		textAreaConsole.setText("There are no enrolled course");
+    	}
+    	else {
+    		// Change the enrolled course list to HashSet
+        	HashSet<String> enrolledC = new HashSet<String>();
+        	for(Course c: enrolled) {
+        		enrolledC.add(c.getTitle());
+        	}
+        	
+        	// Scrape enrolled course list together with their average SFQ from the URL
+        	HashMap<String,Float> enrolledSfq = scraper.scrapeCoursesSFQ(textfieldSfqUrl.getText(),enrolledC);
+        	
+        	// Display wrong web-page in console if return value is null
+        	if(enrolledSfq==null) {
+        		textAreaConsole.setText("The inputted URL is not valid");
+        	}
+        	else {
+        		// Sort the enrolled course
+        		TreeMap<String,Float> sortenrolled = new TreeMap<>(enrolledSfq);
+        		// Display result in console
+        		for (Map.Entry<String,Float> entry: sortenrolled.entrySet()) {
+        			if(entry.getValue()==null) {
+        				textAreaConsole.setText(textAreaConsole.getText() + entry.getKey() + ": (had no SFQ rating available)\n");
+        			} else {
+        				textAreaConsole.setText(textAreaConsole.getText() + entry.getKey() + ": " + (float)Math.round(entry.getValue()*10)/10 + "%\n");
+        			}
+        			
+        		}
+        	}
+    	}
     }
 
     @FXML
