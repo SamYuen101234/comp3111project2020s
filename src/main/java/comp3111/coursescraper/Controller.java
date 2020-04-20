@@ -15,6 +15,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.geometry.Insets;
 import javafx.scene.paint.Color;
+import javafx.scene.control.CheckBox;
 
 import java.util.Random;
 import java.util.List;
@@ -35,7 +36,7 @@ import java.util.HashSet;
 
 public class Controller {
 	List<String> subjects;
-
+	
     @FXML
     private Tab tabMain;
 
@@ -91,6 +92,84 @@ public class Controller {
     private TextArea textAreaConsole;
     
     private Scraper scraper = new Scraper();
+    
+    @FXML
+    private Button selectALL;
+    
+    @FXML
+    private CheckBox AM;
+    
+    @FXML
+    private CheckBox PM;
+    
+    @FXML
+    private CheckBox Monday;
+    
+    @FXML
+    private CheckBox Tuesday;
+    
+    @FXML
+    private CheckBox Wednesday;
+    
+    @FXML
+    private CheckBox Thursday;
+    
+    @FXML
+    private CheckBox Friday;
+    
+    @FXML
+    private CheckBox Saturday;
+    
+    @FXML
+    private CheckBox CommonCore;
+    
+    @FXML
+    private CheckBox NoExclusion;
+    
+    @FXML
+    private CheckBox With_Labs_Tutorial;
+    
+    @FXML
+    void clickCheckBox() {
+    	
+    }
+    
+    
+    
+    @FXML
+    void PressSelectAll() {
+    		if(selectALL.getText().contentEquals("Select All"))
+    		{
+    	    	AM.setSelected(true);
+    	    	PM.setSelected(true);
+    	    	Monday.setSelected(true);
+    	    	Tuesday.setSelected(true);
+    	    	Wednesday.setSelected(true);
+    	    	Thursday.setSelected(true);
+    	    	Friday.setSelected(true);
+    	    	Saturday.setSelected(true);
+    	    	CommonCore.setSelected(true);
+    	    	NoExclusion.setSelected(true);
+    	    	With_Labs_Tutorial.setSelected(true);
+    	    	selectALL.setText("De-select All");
+    		}else {
+    	    	AM.setSelected(false);
+    	    	PM.setSelected(false);
+    	    	Monday.setSelected(false);
+    	    	Tuesday.setSelected(false);
+    	    	Wednesday.setSelected(false);
+    	    	Thursday.setSelected(false);
+    	    	Friday.setSelected(false);
+    	    	Saturday.setSelected(false);
+    	    	CommonCore.setSelected(false);
+    	    	NoExclusion.setSelected(false);
+    	    	With_Labs_Tutorial.setSelected(false);
+    	    	selectALL.setText("Select All");
+    		}
+    }
+    
+    
+    
     
     @FXML
     void allSubjectSearch() {
