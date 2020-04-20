@@ -35,6 +35,8 @@ import java.util.HashSet;
 
 public class Controller {
 	List<String> subjects;
+	List<Course> courses;
+	List<Course> enrollments;
 
     @FXML
     private Tab tabMain;
@@ -90,7 +92,15 @@ public class Controller {
     @FXML
     private TextArea textAreaConsole;
     
+    @FXML
+    private Button buttonPrintAllSubjectCourses;
+    
     private Scraper scraper = new Scraper();
+    
+    @FXML
+    void printAllSubjectCourses() {
+    	printCourses();
+    }
     
     @FXML
     void allSubjectSearch() {
@@ -218,14 +228,35 @@ public class Controller {
     @FXML
     void search() {
     	textAreaConsole.clear();
-    	List<Course> v = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),textfieldSubject.getText());
+    	courses = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),textfieldSubject.getText());
+    	printCourses();
+    	
+    	//Add a random block on Saturday
+    	AnchorPane ap = (AnchorPane)tabTimetable.getContent();
+    	Label randomLabel = new Label("COMP1022\nL1");
+    	Random r = new Random();
+    	double start = (r.nextInt(10) + 1) * 20 + 40;
+
+    	randomLabel.setBackground(new Background(new BackgroundFill(Color.BLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+    	randomLabel.setLayoutX(600.0);
+    	randomLabel.setLayoutY(start);
+    	randomLabel.setMinWidth(100.0);
+    	randomLabel.setMaxWidth(100.0);
+    	randomLabel.setMinHeight(60);
+    	randomLabel.setMaxHeight(60);
+    
+    	ap.getChildren().addAll(randomLabel);
+    }
+    
+    @FXML
+    void printCourses() {
     	Set<String> allInstructor = new HashSet<String>();
     	Set<String> unavailableInstructor = new HashSet<String>();
     	LocalTime time = LocalTime.parse("03:10PM", DateTimeFormatter.ofPattern("hh:mma", Locale.US));
-    	if(v == null) textAreaConsole.setText("404 Not Found: Invalid base URL or term or subject");
+    	if(courses == null) textAreaConsole.setText("404 Not Found: Invalid base URL or term or subject");
     	else {
     		int noOfSection = 0;
-	    	for (Course c : v) {
+	    	for (Course c : courses) {
 	    		String SID = "";
 	    		String newline = c.getTitle() + "\n";
 	    		for (int i = 0; i < c.getNumSlots(); i++) {
@@ -243,7 +274,7 @@ public class Controller {
 	    	}
 	    	String additionalInfo = "";
 	    	additionalInfo += "Total number of different sections: " + Integer.toString(noOfSection) + "\n";
-	    	additionalInfo += "Total number of course: " + Integer.toString(v.size()) + "\n";
+	    	additionalInfo += "Total number of course: " + Integer.toString(courses.size()) + "\n";
 	    	allInstructor.remove("TBA");
 	    	allInstructor.removeAll(unavailableInstructor);
 	    	List<String> availableInstructor = new ArrayList<String>(allInstructor);
@@ -255,23 +286,6 @@ public class Controller {
 	    	
 	    	textAreaConsole.setText(textAreaConsole.getText() + "\n" + additionalInfo);
     	}
-    	
-    	//Add a random block on Saturday
-    	AnchorPane ap = (AnchorPane)tabTimetable.getContent();
-    	Label randomLabel = new Label("COMP1022\nL1");
-    	Random r = new Random();
-    	double start = (r.nextInt(10) + 1) * 20 + 40;
-
-    	randomLabel.setBackground(new Background(new BackgroundFill(Color.BLUE, CornerRadii.EMPTY, Insets.EMPTY)));
-    	randomLabel.setLayoutX(600.0);
-    	randomLabel.setLayoutY(start);
-    	randomLabel.setMinWidth(100.0);
-    	randomLabel.setMaxWidth(100.0);
-    	randomLabel.setMinHeight(60);
-    	randomLabel.setMaxHeight(60);
-    
-    	ap.getChildren().addAll(randomLabel);
-    	
     }
 
 }

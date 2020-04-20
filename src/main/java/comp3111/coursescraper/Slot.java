@@ -41,7 +41,7 @@ public class Slot {
 		return s;
 	}
 	public String toString() {
-		if(start == null) return sectionID + ": TBA   " + venue + "   " + instructor;
+		if(start == null) return sectionID + ": TBA   " + venue;
 		return sectionID + ": " + DAYS[day] + start.toString() + "-" + end.toString() + "   " + venue;
 	}
 	public int getStartHour() {
