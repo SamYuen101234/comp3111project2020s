@@ -116,32 +116,42 @@ public class Controller {
     	// Scrape all subjects from given URL and term
     	subjects = scraper.scrapeSubject(textfieldURL.getText(), textfieldTerm.getText());
     	
+    	// Create a new list if there wasn't any. Otherwise clear the current courses list
+    	if(courses==null) {
+    		courses = new Vector<Course>();
+    	}
+    	else {
+    		courses.clear();
+    	}
+    	
     	// Scrape all courses in each subject in subjects
-    	Vector<Course> allCourses = new Vector<Course>();
-    	for (String s: subjects) {
-    		// List<Course> courses = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),textfieldSubject.getText());
-    		// allCoureses.append???
+    	List<Course> courseOfSubject = new Vector<Course>();
+    	for (int i=0;i<subjects.size();++i) {
+    		if(!subjects.get(i).equals("MGMT")) {
+    			courseOfSubject = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),subjects.get(i));
+    		}
     		
-    		// Print "SUBJECT is done" on console (size of subjects list)
-    		
+    		// Append all courses
+    		for(Course c:courseOfSubject) {
+    			courses.add(c);
+    		}
+    		// Print "SUBJECT is done" on console
+    		System.out.println("SUBJECT is done");
     		
     		// Update progress bar by 1/(total no. of subjects)
-    		
-    		
+    		progressbar.setProgress((float)(1.0/subjects.size()*(i+1)));
     	}
     	// Print total no. of courses in console (size of allCourses list)
-    	
-    	
+    	textAreaConsole.setText("Total Number of Courses fetched: " + courses.size() + "\n");    	
     	
     	// Call "Select all" function in "Filter" tab
     	
     	
-    	// Pass allCourses to "Main"
     	
+    	// Change "Main" tab text input in "Subject" to "(All Subjects)" and enable the show all courses button
+    	textfieldSubject.setText("(All Subjects)");
     	
-    	// Change "Main" tab text input in "Subject" to "(All Subjects)"
-    	
-    	
+    	buttonPrintAllSubjectCourses.setDisable(false);
 
     	// Enables the "Find SFQ with my enrolled courses" button
     	buttonSfqEnrollCourse.setDisable(false);
@@ -246,6 +256,11 @@ public class Controller {
     	randomLabel.setMaxHeight(60);
     
     	ap.getChildren().addAll(randomLabel);
+    	
+    	// Enable sfq enrolled course button
+    	buttonSfqEnrollCourse.setDisable(false);
+    	// Disable show all subject course button
+    	buttonPrintAllSubjectCourses.setDisable(true);
     }
     
     @FXML

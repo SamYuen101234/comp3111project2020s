@@ -29,7 +29,7 @@
                               <Label layoutX="98.0" layoutY="98.0" text="Subject" />
                               <TextField fx:id="textfieldTerm" layoutX="164.0" layoutY="63.0" prefHeight="25.0" prefWidth="343.0" promptText="e.g 1830 (18: yr 18-19; 30: Spring)" text="1910" />
                               <TextField fx:id="textfieldSubject" layoutX="164.0" layoutY="94.0" text="COMP" />
-                              <Button fx:id="buttonPrintAllSubjectCourses" disable="true" layoutX="331.0" layoutY="132.0" mnemonicParsing="false" onAction="#printAllSubjectCourses" text="Show All Subject Courses" />
+                              <Button fx:id="buttonPrintAllSubjectCourses" disable="true" layoutX="397.0" layoutY="147.0" mnemonicParsing="false" onAction="#printAllSubjectCourses" text="Show All Subject Courses" />
                               <Label layoutX="98.0" layoutY="35.0" text="Base URL" />
                               <TextField fx:id="textfieldURL" layoutX="164.0" layoutY="31.0" prefHeight="25.0" prefWidth="343.0" text="https://w5.ab.ust.hk/wcq/cgi-bin/" />
                               <Label layoutX="39.0" layoutY="185.0" text="Please note that during grading we will save the Base URL into another site and manually edit some data. Don't hardcode" textFill="#111111" />
