@@ -11,6 +11,7 @@ public class Course {
 	private Section [] sections;
 	private int numSections;
 	private boolean isCC;
+	private boolean hasLabsOrTutorial;
 	
 	public Course() {
 		sections = new Section[DEFAULT_MAX_SECTION];
@@ -92,5 +93,13 @@ public class Course {
 	
 	public boolean checkCC() {
 		return this.isCC;
+	}
+	
+	public boolean hasLabsOrTutorial() {
+		return this.hasLabsOrTutorial;
+	}
+	
+	public void setLabsOrTutorial() {
+		this.hasLabsOrTutorial = true;
 	}
 }
