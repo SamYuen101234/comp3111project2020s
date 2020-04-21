@@ -1,10 +1,7 @@
 package comp3111.coursescraper;
 
-//import static org.junit.Assert.assertTrue;
-
 import java.awt.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -39,7 +36,7 @@ import java.util.HashSet;
 public class Controller {
 	List<String> subjects;
 	List<Course> courses;
-	List<Section> enrollments;
+	List<Course> enrollments;
 
     @FXML
     private Tab tabMain;
@@ -100,9 +97,15 @@ public class Controller {
     
     private Scraper scraper = new Scraper();
     
+    
+    
+    
+    
+    
+    
     @FXML
     void printAllSubjectCourses() {
-    	textAreaConsole.setText(scraper.printCourses(courses));
+    	printCourses();
     }
     
     @FXML
@@ -111,9 +114,7 @@ public class Controller {
     	subjects = scraper.scrapeSubject(textfieldURL.getText(), textfieldTerm.getText());
 
     	// Record and display the total no. of subjects
-    	if(subjects == null) textAreaConsole.setText("404 Not Found: Invalid base URL or term or subject\n");
-    	else
-    		textAreaConsole.setText("Total Number of Categories/Code Prefix: " + subjects.size());
+    	textAreaConsole.setText("Total Number of Categories/Code Prefix: " + subjects.size());
     }
 
     @FXML
@@ -121,53 +122,35 @@ public class Controller {
     	// Scrape all subjects from given URL and term
     	subjects = scraper.scrapeSubject(textfieldURL.getText(), textfieldTerm.getText());
     	
-    	// Create a new list if there wasn't any. Otherwise clear the current courses list
-    	if(subjects == null) textAreaConsole.setText("404 Not Found: Invalid base URL or term or subject\n");
-    	else {
-    		if(courses==null) {
-        		courses = new Vector<Course>();
-        	}
-        	else {
-        		courses.clear();
-        	}
-        	
-        	// Scrape all courses in each subject in subjects
-        	List<Course> courseOfSubject = new Vector<Course>();
-        	for (int i=0;i<subjects.size();++i) {
-        		if(!subjects.get(i).equals("MGMT")) {
-        			courseOfSubject = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),subjects.get(i));
-        		}
-        		
-        		// Append all courses
-        		for(Course c:courseOfSubject) {
-        			courses.add(c);
-        		}
-        		// Print "SUBJECT is done" on console
-        		System.out.println("SUBJECT is done");
-        		
-        		// Update progress bar by 1/(total no. of subjects)
-        		progressbar.setProgress((float)(1.0/subjects.size()*(i+1)));
-        	}
-        	// Print total no. of courses in console (size of allCourses list)
-        	textAreaConsole.setText("Total Number of Courses fetched: " + courses.size() + "\n");  
-        	
-        	
+    	// Scrape all courses in each subject in subjects
+    	Vector<Course> allCourses = new Vector<Course>();
+    	for (String s: subjects) {
+    		// List<Course> courses = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),textfieldSubject.getText());
+    		// allCoureses.append???
     		
-    		//System.out.println(textAreaConsole.getText().equals("Total Number of Courses fetched: 1137\n"));
-    		//System.out.println(textAreaConsole.getText().equals("Total Number of Courses fetched: 1137"));
-    		//System.out.println(textAreaConsole.getText().equals("Total Number of Courses fetched: 1137 "));
-        	// Call "Select all" function in "Filter" tab
-        	
-        	
-        	
-        	// Change "Main" tab text input in "Subject" to "(All Subjects)" and enable the show all courses button
-        	textfieldSubject.setText("(All Subjects)");
-        	
-        	buttonPrintAllSubjectCourses.setDisable(false);
-
-        	// Enables the "Find SFQ with my enrolled courses" button
-        	buttonSfqEnrollCourse.setDisable(false);
+    		// Print "SUBJECT is done" on console (size of subjects list)
+    		
+    		
+    		// Update progress bar by 1/(total no. of subjects)
+    		
+    		
     	}
+    	// Print total no. of courses in console (size of allCourses list)
+    	
+    	
+    	
+    	// Call "Select all" function in "Filter" tab
+    	
+    	
+    	// Pass allCourses to "Main"
+    	
+    	
+    	// Change "Main" tab text input in "Subject" to "(All Subjects)"
+    	
+    	
+
+    	// Enables the "Find SFQ with my enrolled courses" button
+    	buttonSfqEnrollCourse.setDisable(false);
     }
 
 
@@ -181,7 +164,7 @@ public class Controller {
     	
     	// Display wrong web-page in console if return value is null
     	if (instructors == null) {
-    		textAreaConsole.setText("The inputted URL is not valid\n");
+    		textAreaConsole.setText("The inputted URL is not valid");
     	}
     	else {
     		// Sort instructors according alphabetical order in the format of "LAST_NAME, FIRST_NAME"
@@ -230,7 +213,7 @@ public class Controller {
         	
         	// Display wrong web-page in console if return value is null
         	if(enrolledSfq==null) {
-        		textAreaConsole.setText("The inputted URL is not valid\n");
+        		textAreaConsole.setText("The inputted URL is not valid");
         	}
         	else {
         		// Sort the enrolled course
@@ -252,7 +235,7 @@ public class Controller {
     void search() {
     	textAreaConsole.clear();
     	courses = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),textfieldSubject.getText());
-    	textAreaConsole.setText(scraper.printCourses(courses));
+    	printCourses();
     	
     	//Add a random block on Saturday
     	AnchorPane ap = (AnchorPane)tabTimetable.getContent();
@@ -269,11 +252,46 @@ public class Controller {
     	randomLabel.setMaxHeight(60);
     
     	ap.getChildren().addAll(randomLabel);
-    	
-    	// Enable sfq enrolled course button
-    	buttonSfqEnrollCourse.setDisable(false);
-    	// Disable show all subject course button
-    	buttonPrintAllSubjectCourses.setDisable(true);
+    }
+    
+    @FXML
+    void printCourses() {
+    	Set<String> allInstructor = new HashSet<String>();
+    	Set<String> unavailableInstructor = new HashSet<String>();
+    	LocalTime time = LocalTime.parse("03:10PM", DateTimeFormatter.ofPattern("hh:mma", Locale.US));
+    	if(courses == null) textAreaConsole.setText("404 Not Found: Invalid base URL or term or subject");
+    	else {
+    		int noOfSection = 0;
+	    	for (Course c : courses) {
+	    		String SID = "";
+	    		String newline = c.getTitle() + "\n";
+	    		for (int i = 0; i < c.getNumSlots(); i++) {
+	    			Slot t = c.getSlot(i);
+	    			newline += t + "\n";
+	    			if(SID != t.getSectionID()) {
+	    				++noOfSection;
+	    				SID = t.getSectionID();
+	    			}
+	    			allInstructor.addAll(t.getAllInstructor());
+	    			if(t.getStart() != null && time.isAfter(t.getStart()) && time.isBefore(t.getEnd())) unavailableInstructor.addAll(t.getAllInstructor());
+	    		}
+	    		
+	    		textAreaConsole.setText(textAreaConsole.getText() + "\n" + newline);
+	    	}
+	    	String additionalInfo = "";
+	    	additionalInfo += "Total number of different sections: " + Integer.toString(noOfSection) + "\n";
+	    	additionalInfo += "Total number of course: " + Integer.toString(courses.size()) + "\n";
+	    	allInstructor.remove("TBA");
+	    	allInstructor.removeAll(unavailableInstructor);
+	    	List<String> availableInstructor = new ArrayList<String>(allInstructor);
+	    	Collections.sort(availableInstructor);
+	    	additionalInfo += "Instructors who has teaching assignment this term but does not need to teach at Tu3:10pm:\n";
+	    	for(int i = 0; i < availableInstructor.size(); ++i) {
+	    		additionalInfo += availableInstructor.get(i) + "\n";
+	    	}
+	    	
+	    	textAreaConsole.setText(textAreaConsole.getText() + "\n" + additionalInfo);
+    	}
     }
 
 }
