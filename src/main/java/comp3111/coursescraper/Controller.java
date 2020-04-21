@@ -36,7 +36,7 @@ import java.util.HashSet;
 public class Controller {
 	List<String> subjects;
 	List<Course> courses;
-	List<Course> enrollments;
+	List<Section> enrollments;
 
     @FXML
     private Tab tabMain;
@@ -99,7 +99,7 @@ public class Controller {
     
     @FXML
     void printAllSubjectCourses() {
-    	printCourses();
+    	textAreaConsole.setText(scraper.printCourses(courses));
     }
     
     @FXML
@@ -229,7 +229,7 @@ public class Controller {
     void search() {
     	textAreaConsole.clear();
     	courses = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),textfieldSubject.getText());
-    	printCourses();
+    	textAreaConsole.setText(scraper.printCourses(courses));
     	
     	//Add a random block on Saturday
     	AnchorPane ap = (AnchorPane)tabTimetable.getContent();
@@ -246,46 +246,6 @@ public class Controller {
     	randomLabel.setMaxHeight(60);
     
     	ap.getChildren().addAll(randomLabel);
-    }
-    
-    @FXML
-    void printCourses() {
-    	Set<String> allInstructor = new HashSet<String>();
-    	Set<String> unavailableInstructor = new HashSet<String>();
-    	LocalTime time = LocalTime.parse("03:10PM", DateTimeFormatter.ofPattern("hh:mma", Locale.US));
-    	if(courses == null) textAreaConsole.setText("404 Not Found: Invalid base URL or term or subject");
-    	else {
-    		int noOfSection = 0;
-	    	for (Course c : courses) {
-	    		String SID = "";
-	    		String newline = c.getTitle() + "\n";
-	    		for (int i = 0; i < c.getNumSlots(); i++) {
-	    			Slot t = c.getSlot(i);
-	    			newline += t + "\n";
-	    			if(SID != t.getSectionID()) {
-	    				++noOfSection;
-	    				SID = t.getSectionID();
-	    			}
-	    			allInstructor.addAll(t.getAllInstructor());
-	    			if(t.getStart() != null && time.isAfter(t.getStart()) && time.isBefore(t.getEnd())) unavailableInstructor.addAll(t.getAllInstructor());
-	    		}
-	    		
-	    		textAreaConsole.setText(textAreaConsole.getText() + "\n" + newline);
-	    	}
-	    	String additionalInfo = "";
-	    	additionalInfo += "Total number of different sections: " + Integer.toString(noOfSection) + "\n";
-	    	additionalInfo += "Total number of course: " + Integer.toString(courses.size()) + "\n";
-	    	allInstructor.remove("TBA");
-	    	allInstructor.removeAll(unavailableInstructor);
-	    	List<String> availableInstructor = new ArrayList<String>(allInstructor);
-	    	Collections.sort(availableInstructor);
-	    	additionalInfo += "Instructors who has teaching assignment this term but does not need to teach at Tu3:10pm:\n";
-	    	for(int i = 0; i < availableInstructor.size(); ++i) {
-	    		additionalInfo += availableInstructor.get(i) + "\n";
-	    	}
-	    	
-	    	textAreaConsole.setText(textAreaConsole.getText() + "\n" + additionalInfo);
-    	}
     }
 
 }
