@@ -15,6 +15,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.geometry.Insets;
 import javafx.scene.paint.Color;
+import javafx.scene.control.CheckBox;
 
 import java.util.Random;
 import java.util.List;
@@ -109,6 +110,160 @@ public class Controller {
     }
     
     @FXML
+    void printAllSubjectCourses() {
+    	printCourses();
+    }
+    @FXML
+    private Button selectALL;
+    
+    @FXML
+    private CheckBox AM;
+    
+    @FXML
+    private CheckBox PM;
+    
+    @FXML
+    private CheckBox Monday;
+    
+    @FXML
+    private CheckBox Tuesday;
+    
+    @FXML
+    private CheckBox Wednesday;
+    
+    @FXML
+    private CheckBox Thursday;
+    
+    @FXML
+    private CheckBox Friday;
+    
+    @FXML
+    private CheckBox Saturday;
+    
+    @FXML
+    private CheckBox CommonCore;
+    
+    @FXML
+    private CheckBox NoExclusion;
+    
+    @FXML
+    private CheckBox With_Labs_Tutorial;
+    
+    Vector<CheckBox> getAllCheckBox(){
+    	Vector<CheckBox> CheckBoxes = new Vector<CheckBox>();
+    	CheckBoxes.add(AM);
+    	CheckBoxes.add(PM);
+    	CheckBoxes.add(Monday);
+    	CheckBoxes.add(Tuesday);
+    	CheckBoxes.add(Wednesday);
+    	CheckBoxes.add(Thursday);
+    	CheckBoxes.add(Friday);
+    	CheckBoxes.add(Saturday);
+    	CheckBoxes.add(CommonCore);
+    	CheckBoxes.add(NoExclusion);
+    	CheckBoxes.add(With_Labs_Tutorial);
+    	return CheckBoxes;
+    }
+    
+    
+    
+    @FXML
+    void clickCheckBox() {
+    	Vector<CheckBox> CheckBoxes = getAllCheckBox();
+    	Vector<CheckBox> Checked = new Vector<CheckBox>();
+    	Vector<Course> Filtered = new Vector<Course>();
+    	String DAYS[] = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+    	List<Course> AM_course = new Vector<Course>();
+		List<Course> PM_course = new Vector<Course>();
+		List<Course> Monday_course = new Vector<Course>();
+		List<Course> Tuesday_course = new Vector<Course>();
+		List<Course> Wednesday_course = new Vector<Course>();
+		List<Course> Thursday_course = new Vector<Course>();
+		List<Course> Friday_course = new Vector<Course>();
+		List<Course> Saturday_course = new Vector<Course>();
+		List<Course> CC_course = new Vector<Course>();
+		List<Course> NoExclusion_course = new Vector<Course>();
+		List<Course> Lab_Tutorial_course = new Vector<Course>();
+		LocalTime time = LocalTime.parse("12:00PM", DateTimeFormatter.ofPattern("hh:mma", Locale.US));
+    	
+    	
+    	for(int i =0; i < CheckBoxes.size(); ++i) {
+    		if(CheckBoxes.get(i).isSelected()) {
+    			Checked.add(CheckBoxes.get(i));
+    		}
+    	}
+    	
+    	for (int i = 0; i < courses.size(); ++i) {
+    		for(int j = 0; j < courses.get(i).getNumSections(); ++j) {
+    			for(int k = 0; k < courses.get(i).getSection(j).getNumSlots(); ++k) {
+	    			for(int l = 0; l < Checked.size(); ++l) {
+			    		String CheckBox_name = Checked.get(l).getText();
+			    		
+			    		if(CheckBox_name.contentEquals("AM")) {
+			    			System.out.println(courses.get(i).getSection(j).getSlot(k).getStartHour());
+			    			//if(courses.get(i).getSlot(j).get
+			    			
+			    			
+			    			continue;
+			    		}else if(CheckBox_name.contentEquals("PM")) {
+			    			
+			    			continue;
+			    		}
+	    		
+	    		/*for(int weekday = 0; weekday < DAYS.length; ++weekday) {
+	    			if(CheckBox_name.contentEquals(DAYS[weekday])) {
+	    				for(int j = 0; j < courses.size(); ++j) {
+	        				for(int k = 0; k < courses.get(i).getNumSlots(); ++k) {
+	        					if(courses.get(j).getSlot(k).getDay() == weekday+1 && Filtered.indexOf(courses.get(i)) == -1) {
+	        						Filtered.add(courses.get(i));
+	        					}
+	        				}
+	        			}
+	    				break;
+	    			}
+	    		}*/
+	    			}
+    			}	
+    		}
+    	}
+    	
+    }
+    
+    
+    
+    @FXML
+    void PressSelectAll() {
+    		if(selectALL.getText().contentEquals("Select All"))
+    		{
+    	    	AM.setSelected(true);
+    	    	PM.setSelected(true);
+    	    	Monday.setSelected(true);
+    	    	Tuesday.setSelected(true);
+    	    	Wednesday.setSelected(true);
+    	    	Thursday.setSelected(true);
+    	    	Friday.setSelected(true);
+    	    	Saturday.setSelected(true);
+    	    	CommonCore.setSelected(true);
+    	    	NoExclusion.setSelected(true);
+    	    	With_Labs_Tutorial.setSelected(true);
+    	    	selectALL.setText("De-select All");
+    		}else {
+    	    	AM.setSelected(false);
+    	    	PM.setSelected(false);
+    	    	Monday.setSelected(false);
+    	    	Tuesday.setSelected(false);
+    	    	Wednesday.setSelected(false);
+    	    	Thursday.setSelected(false);
+    	    	Friday.setSelected(false);
+    	    	Saturday.setSelected(false);
+    	    	CommonCore.setSelected(false);
+    	    	NoExclusion.setSelected(false);
+    	    	With_Labs_Tutorial.setSelected(false);
+    	    	selectALL.setText("Select All");
+    		}
+    }
+    
+    @FXML
     void allSubjectSearch() {
     	// Scrape all subjects from given URL and term
     	subjects = scraper.scrapeSubject(textfieldURL.getText(), textfieldTerm.getText());
@@ -122,32 +277,42 @@ public class Controller {
     	// Scrape all subjects from given URL and term
     	subjects = scraper.scrapeSubject(textfieldURL.getText(), textfieldTerm.getText());
     	
+    	// Create a new list if there wasn't any. Otherwise clear the current courses list
+    	if(courses==null) {
+    		courses = new Vector<Course>();
+    	}
+    	else {
+    		courses.clear();
+    	}
+    	
     	// Scrape all courses in each subject in subjects
-    	Vector<Course> allCourses = new Vector<Course>();
-    	for (String s: subjects) {
-    		// List<Course> courses = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),textfieldSubject.getText());
-    		// allCoureses.append???
+    	List<Course> courseOfSubject = new Vector<Course>();
+    	for (int i=0;i<subjects.size();++i) {
+    		if(!subjects.get(i).equals("MGMT")) {
+    			courseOfSubject = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),subjects.get(i));
+    		}
     		
-    		// Print "SUBJECT is done" on console (size of subjects list)
-    		
+    		// Append all courses
+    		for(Course c:courseOfSubject) {
+    			courses.add(c);
+    		}
+    		// Print "SUBJECT is done" on console
+    		System.out.println("SUBJECT is done");
     		
     		// Update progress bar by 1/(total no. of subjects)
-    		
-    		
+    		progressbar.setProgress((float)(1.0/subjects.size()*(i+1)));
     	}
     	// Print total no. of courses in console (size of allCourses list)
-    	
-    	
+    	textAreaConsole.setText("Total Number of Courses fetched: " + courses.size() + "\n");    	
     	
     	// Call "Select all" function in "Filter" tab
     	
     	
-    	// Pass allCourses to "Main"
     	
+    	// Change "Main" tab text input in "Subject" to "(All Subjects)" and enable the show all courses button
+    	textfieldSubject.setText("(All Subjects)");
     	
-    	// Change "Main" tab text input in "Subject" to "(All Subjects)"
-    	
-    	
+    	buttonPrintAllSubjectCourses.setDisable(false);
 
     	// Enables the "Find SFQ with my enrolled courses" button
     	buttonSfqEnrollCourse.setDisable(false);
