@@ -144,28 +144,27 @@ public class Scraper {
 	}
 	
 	public List<String> scrapeSubject(String baseurl, String term){
-
+		HtmlPage mainPage;
 		try {
-			HtmlPage mainPage = client.getPage(baseurl + "/" + term + "/");
-
-			List<?> subjectHTML = (List<?>) mainPage.getByXPath("//div[@class='depts']/a");
-
-			Vector<String> subjects = new Vector<String>();
-
-			for (HtmlElement e: (List<HtmlElement>) subjectHTML) {
-				String subj = new String();
-
-				subj = e.asText();
-
-				subjects.add(subj);
-			}
-
-			return subjects;
-
-		}catch (Exception e) {
-			System.out.println(e);
+			mainPage = client.getPage(baseurl + "/" + term + "/");
+		} catch(Exception e) {
+			return null;
 		}
-		return null;
+
+		List<?> subjectHTML = (List<?>) mainPage.getByXPath("//div[@class='depts']/a");
+
+		Vector<String> subjects = new Vector<String>();
+
+		for (HtmlElement e: (List<HtmlElement>) subjectHTML) {
+			String subj = new String();
+
+			subj = e.asText();
+
+			subjects.add(subj);
+		}
+
+		return subjects;
+
 	}
 
 

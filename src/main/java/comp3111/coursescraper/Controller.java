@@ -1,7 +1,10 @@
 package comp3111.coursescraper;
 
+//import static org.junit.Assert.assertTrue;
+
 import java.awt.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -108,7 +111,9 @@ public class Controller {
     	subjects = scraper.scrapeSubject(textfieldURL.getText(), textfieldTerm.getText());
 
     	// Record and display the total no. of subjects
-    	textAreaConsole.setText("Total Number of Categories/Code Prefix: " + subjects.size());
+    	if(subjects == null) textAreaConsole.setText("404 Not Found: Invalid base URL or term or subject\n");
+    	else
+    		textAreaConsole.setText("Total Number of Categories/Code Prefix: " + subjects.size());
     }
 
     @FXML
@@ -117,44 +122,52 @@ public class Controller {
     	subjects = scraper.scrapeSubject(textfieldURL.getText(), textfieldTerm.getText());
     	
     	// Create a new list if there wasn't any. Otherwise clear the current courses list
-    	if(courses==null) {
-    		courses = new Vector<Course>();
-    	}
+    	if(subjects == null) textAreaConsole.setText("404 Not Found: Invalid base URL or term or subject\n");
     	else {
-    		courses.clear();
-    	}
-    	
-    	// Scrape all courses in each subject in subjects
-    	List<Course> courseOfSubject = new Vector<Course>();
-    	for (int i=0;i<subjects.size();++i) {
-    		if(!subjects.get(i).equals("MGMT")) {
-    			courseOfSubject = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),subjects.get(i));
-    		}
+    		if(courses==null) {
+        		courses = new Vector<Course>();
+        	}
+        	else {
+        		courses.clear();
+        	}
+        	
+        	// Scrape all courses in each subject in subjects
+        	List<Course> courseOfSubject = new Vector<Course>();
+        	for (int i=0;i<subjects.size();++i) {
+        		if(!subjects.get(i).equals("MGMT")) {
+        			courseOfSubject = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),subjects.get(i));
+        		}
+        		
+        		// Append all courses
+        		for(Course c:courseOfSubject) {
+        			courses.add(c);
+        		}
+        		// Print "SUBJECT is done" on console
+        		System.out.println("SUBJECT is done");
+        		
+        		// Update progress bar by 1/(total no. of subjects)
+        		progressbar.setProgress((float)(1.0/subjects.size()*(i+1)));
+        	}
+        	// Print total no. of courses in console (size of allCourses list)
+        	textAreaConsole.setText("Total Number of Courses fetched: " + courses.size() + "\n");  
+        	
+        	
     		
-    		// Append all courses
-    		for(Course c:courseOfSubject) {
-    			courses.add(c);
-    		}
-    		// Print "SUBJECT is done" on console
-    		System.out.println("SUBJECT is done");
-    		
-    		// Update progress bar by 1/(total no. of subjects)
-    		progressbar.setProgress((float)(1.0/subjects.size()*(i+1)));
-    	}
-    	// Print total no. of courses in console (size of allCourses list)
-    	textAreaConsole.setText("Total Number of Courses fetched: " + courses.size() + "\n");    	
-    	
-    	// Call "Select all" function in "Filter" tab
-    	
-    	
-    	
-    	// Change "Main" tab text input in "Subject" to "(All Subjects)" and enable the show all courses button
-    	textfieldSubject.setText("(All Subjects)");
-    	
-    	buttonPrintAllSubjectCourses.setDisable(false);
+    		//System.out.println(textAreaConsole.getText().equals("Total Number of Courses fetched: 1137\n"));
+    		//System.out.println(textAreaConsole.getText().equals("Total Number of Courses fetched: 1137"));
+    		//System.out.println(textAreaConsole.getText().equals("Total Number of Courses fetched: 1137 "));
+        	// Call "Select all" function in "Filter" tab
+        	
+        	
+        	
+        	// Change "Main" tab text input in "Subject" to "(All Subjects)" and enable the show all courses button
+        	textfieldSubject.setText("(All Subjects)");
+        	
+        	buttonPrintAllSubjectCourses.setDisable(false);
 
-    	// Enables the "Find SFQ with my enrolled courses" button
-    	buttonSfqEnrollCourse.setDisable(false);
+        	// Enables the "Find SFQ with my enrolled courses" button
+        	buttonSfqEnrollCourse.setDisable(false);
+    	}
     }
 
 
@@ -168,7 +181,7 @@ public class Controller {
     	
     	// Display wrong web-page in console if return value is null
     	if (instructors == null) {
-    		textAreaConsole.setText("The inputted URL is not valid");
+    		textAreaConsole.setText("The inputted URL is not valid\n");
     	}
     	else {
     		// Sort instructors according alphabetical order in the format of "LAST_NAME, FIRST_NAME"
@@ -217,7 +230,7 @@ public class Controller {
         	
         	// Display wrong web-page in console if return value is null
         	if(enrolledSfq==null) {
-        		textAreaConsole.setText("The inputted URL is not valid");
+        		textAreaConsole.setText("The inputted URL is not valid\n");
         	}
         	else {
         		// Sort the enrolled course

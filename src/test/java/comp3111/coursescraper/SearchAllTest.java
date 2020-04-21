@@ -5,14 +5,17 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
 
+import org.testfx.framework.junit.ApplicationTest;
 import comp3111.coursescraper.Scraper;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 
-public class SearchAllTest extends FxTest {
+public class SearchAllTest extends ApplicationTest {
 	String[] subjectsList;
 	String baseURL;
 	String term;
@@ -45,18 +48,61 @@ public class SearchAllTest extends FxTest {
 	@Test
 	public void testScrapeSubjects() {
 		assertArrayEquals(subjectsList,scraper.scrapeSubject(baseURL,term).toArray());
+		clickOn("#tabAllSubject");
+		clickOn("#allSubjectSearch");
+		TextArea t = (TextArea)s.lookup("#textAreaConsole");
+		sleep(1000);
+		assertEquals(t.getText(),"Total Number of Categories/Code Prefix: 75");
 	}
 
 	@Test
-	public void testButton() {
-		//FXMLLoader loader = new FXMLLoader();
-    	//loader.setLocation(getClass().getResource("/ui.fxml"));
+	public void testAllCoursesSearch() {
+		// Test number of courses correct		
 		clickOn("#tabAllSubject");
-		clickOn("#allSubjectSearch");
 		clickOn("#allCoursesSearch");
-		Button bu = (Button)s.lookup("#allCoursesSearch");
-		//sleep(1000);
+		clickOn("#allCoursesSearch");
+		TextArea t = (TextArea)s.lookup("#textAreaConsole");
+		sleep(1000);
+		assertEquals(t.getText(),"Total Number of Courses fetched: 1137\n");
+		
+		// Test courses detail print
+		clickOn("#tabMain");
+		clickOn("#buttonPrintAllSubjectCourses");
+		sleep(1000);
+		Boolean t1 = t.getText().length() > 200000;
+		assertTrue(t1);
+		
+		// Test Sfq enroll course button enabled
+		clickOn("#tabSfq");
+		Button bu = (Button)s.lookup("#buttonSfqEnrollCourse");
+		sleep(1000);
 		assertFalse(bu.isDisabled());
 	}
-
+	
+	@Test
+	public void testInvalidSubjectUrl() {
+		clickOn("#tabMain");
+		TextField t = (TextField)s.lookup("#textfieldURL");
+		t.setText("https://w5.ab-wrong.ust.hk/wcq/cgi-bin/");
+		clickOn("#tabAllSubject");
+		clickOn("#allSubjectSearch");
+		TextArea t2 = (TextArea)s.lookup("#textAreaConsole");
+		sleep(1000);
+		assertEquals(t2.getText(),"404 Not Found: Invalid base URL or term or subject\n");
+			
+	}
+	
+	@Test
+	public void testInvalidCourseUrl() {
+		clickOn("#tabMain");
+		TextField t = (TextField)s.lookup("#textfieldURL");
+		t.setText("https://w5.ab-wrong.ust.hk/wcq/cgi-bin/");
+		clickOn("#tabAllSubject");
+		TextArea t2 = (TextArea)s.lookup("#textAreaConsole");
+		
+		clickOn("#allCoursesSearch");
+		sleep(1000);
+		assertEquals(t2.getText(),"404 Not Found: Invalid base URL or term or subject\n");
+		
+	}
 }
