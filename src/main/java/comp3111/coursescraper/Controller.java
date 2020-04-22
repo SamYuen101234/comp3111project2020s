@@ -171,15 +171,11 @@ public class Controller {
     	Vector<CheckBox> CheckBoxes = getAllCheckBox();
     	Vector<CheckBox> Checked = new Vector<CheckBox>();
     	List<Course> Filtered = new Vector<Course>();
-    	String DAYS[] = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};    	
-    
     	for(int i =0; i < CheckBoxes.size(); ++i) {
     		if(CheckBoxes.get(i).isSelected()) {
     			Checked.add(CheckBoxes.get(i));
     		}
     	}
-    	
-    	
     	for (int i = 0; i < courses.size(); ++i) {
     		Course temp_course = new Course();
     		//System.out.println(courses.get(i).getExclusion());
@@ -188,12 +184,10 @@ public class Controller {
     			fulfils[l] = false;
     			String CheckBox_name = Checked.get(l).getText();
   		    	for(int j = 0; j < courses.get(i).getNumSections(); ++j) {
-  		    		//System.out.println(courses.get(i).getSection(j).getSectionID());
 		    		Section temp_section = new Section();
 		    		for(int k = 0; k < courses.get(i).getSection(j).getNumSlots(); ++k) {
 		    			Slot temp_slot = courses.get(i).getSection(j).getSlot(k);
 			    		if(CheckBox_name.contentEquals("AM")) {
-			    			//System.out.println(courses.get(i).getSection(j).getSlot(k).getStartHour());
 			    			if(temp_slot.getStartHour() < 12) {
 			    				fulfils[l] = true;
 			    				temp_section.addSlot(temp_slot);
