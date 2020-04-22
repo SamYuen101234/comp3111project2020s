@@ -14,8 +14,16 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TableColumn;
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.TableCell;
 
 import java.util.Random;
 import java.util.List;
@@ -32,7 +40,7 @@ import java.util.Vector;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.HashSet;
-
+import javafx.util.Callback;
 import java.lang.Object;
 
 
@@ -100,12 +108,6 @@ public class Controller {
     
     private Scraper scraper = new Scraper();
     
-    
-    
-    
-    
-    
-    
     @FXML
     void printAllSubjectCourses() {
     	scraper.printCourses(courses);
@@ -146,6 +148,27 @@ public class Controller {
     
     @FXML
     private CheckBox With_Labs_Tutorial;
+    
+    @FXML
+    private TableView<List_row> List_table = new TableView<>();
+    
+    private ObservableList<List_row> toObservableList = FXCollections.observableArrayList();
+    
+    
+    @FXML
+    private TableColumn<List_row, String> course_code = new TableColumn<>("Course Code");
+    
+    @FXML
+    private TableColumn<List_row, String> section = new TableColumn<>("Section");
+
+    @FXML
+    private TableColumn<List_row, String> course_name = new TableColumn<>("Course Name");
+
+    @FXML
+    private TableColumn<List_row, String> instructor = new TableColumn<>("Instructor");
+
+    @FXML
+    private TableColumn<List_row, Void> enroll = new TableColumn<>("Enroll");
     
     Vector<CheckBox> getAllCheckBox(){
     	Vector<CheckBox> CheckBoxes = new Vector<CheckBox>();
@@ -278,12 +301,9 @@ public class Controller {
     	}else {
     		String search_console = scraper.printCourses(courses);
     		textAreaConsole.setText(search_console);
-    	}
-    	
-    	
-    	    	
+    	}    
+    	List_View(Filtered);
     }
-    
     
     
     @FXML
@@ -324,7 +344,75 @@ public class Controller {
     	    	selectALL.setText("Select All");
     		}
     		checkboxfilter();
+    		
     }
+    
+    
+    //Task 3 List
+    @SuppressWarnings("unchecked")
+    void List_View(List<Course> courses) {    	
+    	List<List_row> list_rows = new Vector<>();
+    	for(int i = 0; i < courses.size(); ++i) {
+    		Course course = courses.get(i);
+    		for(int j = 0; j < courses.get(i).getNumSections(); ++j) {
+    			Section section = course.getSection(j);
+    			for(int k = 0; k <courses.get(i).getSection(j).getNumSlots(); ++k) {
+    				Slot slot = section.getSlot(k);
+    				List_row list_row  = new List_row(course, section, slot);
+    				//System.out.println(list_row.getCourse_code());
+    				//System.out.println(list_row.getSection());
+    				//System.out.println(list_row.getCourse_name());
+    				//System.out.println(list_row.getInstructor());
+    				list_rows.add(list_row);
+    			}
+    		}
+    	}
+    	
+    	for(int i = 0; i < list_rows.size(); ++i) {
+			System.out.println(list_rows.get(i).getCourse_code());
+			System.out.println(list_rows.get(i).getSection());
+			System.out.println(list_rows.get(i).getCourse_name());
+			System.out.println(list_rows.get(i).getInstructor());
+    	}
+    	
+    	toObservableList.addAll(list_rows);
+    	List_table.setItems(toObservableList);
+    	course_code.setCellValueFactory(new PropertyValueFactory<>("course_code"));
+    	section.setCellValueFactory(new PropertyValueFactory<>("section"));
+    	course_name.setCellValueFactory(new PropertyValueFactory<>("course_name"));
+    	instructor.setCellValueFactory(new PropertyValueFactory<>("instructor"));
+    	List_table.getColumns().setAll(course_code, section, course_name, instructor);
+    	addCheckBoxToTable();
+    }
+    
+    private void addCheckBoxToTable() {
+    	Callback<TableColumn<List_row, Void>, TableCell<List_row, Void>> cellFactory = 
+    			new Callback<TableColumn<List_row, Void>, TableCell<List_row, Void>>(){
+    		@Override
+    		public TableCell<List_row, Void> call(final TableColumn<List_row, Void> param) {
+    			final TableCell<List_row, Void> cell = new TableCell<List_row, Void>() {
+    				private final CheckBox cb = new CheckBox();
+    				
+    				@Override
+    				public void updateItem(Void item, boolean empty) {
+    					super.updateItem(item, empty);
+    					if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(cb);
+                        }
+    				}
+    			};
+    			return cell;
+    		}
+    		
+    	};
+    	enroll.setCellFactory(cellFactory);
+    	List_table.getColumns().add(enroll);
+
+    }
+    
+    
     
     @FXML
     void allSubjectSearch() {
