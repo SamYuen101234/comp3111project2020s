@@ -171,14 +171,23 @@ public class Controller {
     	Vector<CheckBox> CheckBoxes = getAllCheckBox();
     	Vector<CheckBox> Checked = new Vector<CheckBox>();
     	List<Course> Filtered = new Vector<Course>();
+    	
     	for(int i =0; i < CheckBoxes.size(); ++i) {
     		if(CheckBoxes.get(i).isSelected()) {
     			Checked.add(CheckBoxes.get(i));
     		}
     	}
+    	
+    	if(Checked.size() != CheckBoxes.size()) {
+    		selectALL.setText("Select All");
+    	}else
+    		selectALL.setText("De-select All");
+    	
+    	if(courses == null)
+    		return;
+    	
     	for (int i = 0; i < courses.size(); ++i) {
     		Course temp_course = new Course();
-    		//System.out.println(courses.get(i).getExclusion());
     		boolean[] fulfils = new boolean[Checked.size()];
     		for(int l = 0; l < Checked.size(); ++l){
     			fulfils[l] = false;
@@ -234,7 +243,6 @@ public class Controller {
 			    			}
 			    		}else if(CheckBox_name.contentEquals("No Exclusion")) {
 			    			if(courses.get(i).getExclusion() == "null") {
-			    				System.out.println("Hello");
 			    				fulfils[l] = true;
 			    				temp_section.addSlot(temp_slot);
 			    			}
@@ -251,7 +259,7 @@ public class Controller {
 		    			temp_section.setSectionID(courses.get(i).getSection(j).getSectionID());
 		    			temp_course.addSection(temp_section);
 		    		}
-			}
+  		    	}
       		}
     		temp_course.setTitle(courses.get(i).getTitle());
     		temp_course.setDescription(courses.get(i).getDescription());
@@ -263,16 +271,30 @@ public class Controller {
     			Filtered.add(temp_course);
     		}
     	}
+    	if(Checked.size() > 0)
+    	{
+    		String filter_console = scraper.printCourses(Filtered);
+    		textAreaConsole.setText(filter_console);
+    	}else {
+    		String search_console = scraper.printCourses(courses);
+    		textAreaConsole.setText(search_console);
+    	}
     	
-    
-    	String filter_console = scraper.printCourses(Filtered);
-    	textAreaConsole.setText(filter_console);
+    	
+    	    	
     }
     
     
     
     @FXML
     void PressSelectAll() {
+    	Vector<CheckBox> CheckBoxes = getAllCheckBox();
+    	Vector<CheckBox> Checked = new Vector<CheckBox>();
+    	for(int i =0; i < CheckBoxes.size(); ++i) {
+    		if(CheckBoxes.get(i).isSelected()) {
+    			Checked.add(CheckBoxes.get(i));
+    		}
+    	}
     		if(selectALL.getText().contentEquals("Select All"))
     		{
     	    	AM.setSelected(true);
