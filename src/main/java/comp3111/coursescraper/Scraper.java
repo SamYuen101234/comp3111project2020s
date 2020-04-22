@@ -157,11 +157,11 @@ public class Scraper {
 		Section s = new Section();
 		if(!secondRow) {
 			String sectionID = e.getChildNodes().get(1).asText();
-			if(!sectionID.substring(0, 1).equals("L")
-					&& !sectionID.substring(0, 1).equals("T")
-					&& !sectionID.substring(0, 2).equals("LX")
-					&& !sectionID.substring(0, 2).equals("LA")) return;
-			else s.setSectionID(sectionID);
+			if(sectionID.substring(0, 1).equals("T") || sectionID.substring(0, 2).equals("LA")) {
+				c.setLabsOrTutorial();
+			}
+			else if(!sectionID.substring(0, 1).equals("L") && !sectionID.substring(0, 2).equals("LX")) return;
+			s.setSectionID(sectionID);
 		}
 		else s = c.getSection(c.getNumSections()-1);
 		
