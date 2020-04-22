@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.HashSet;
 
+import java.lang.Object;
+
 
 public class Controller {
 	List<String> subjects;
@@ -164,65 +166,113 @@ public class Controller {
     
     
     @FXML
-    void clickCheckBox() {
+    void checkboxfilter(){
+    	textAreaConsole.clear();
     	Vector<CheckBox> CheckBoxes = getAllCheckBox();
     	Vector<CheckBox> Checked = new Vector<CheckBox>();
-    	Vector<Course> Filtered = new Vector<Course>();
-    	String DAYS[] = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-    	List<Course> AM_course = new Vector<Course>();
-		List<Course> PM_course = new Vector<Course>();
-		List<Course> Monday_course = new Vector<Course>();
-		List<Course> Tuesday_course = new Vector<Course>();
-		List<Course> Wednesday_course = new Vector<Course>();
-		List<Course> Thursday_course = new Vector<Course>();
-		List<Course> Friday_course = new Vector<Course>();
-		List<Course> Saturday_course = new Vector<Course>();
-		List<Course> CC_course = new Vector<Course>();
-		List<Course> NoExclusion_course = new Vector<Course>();
-		List<Course> Lab_Tutorial_course = new Vector<Course>();
-		LocalTime time = LocalTime.parse("12:00PM", DateTimeFormatter.ofPattern("hh:mma", Locale.US));
-    	
-    	
+    	List<Course> Filtered = new Vector<Course>();
+    	String DAYS[] = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};    	
+    
     	for(int i =0; i < CheckBoxes.size(); ++i) {
     		if(CheckBoxes.get(i).isSelected()) {
     			Checked.add(CheckBoxes.get(i));
     		}
     	}
     	
+    	
     	for (int i = 0; i < courses.size(); ++i) {
-    		for(int j = 0; j < courses.get(i).getNumSections(); ++j) {
-    			for(int k = 0; k < courses.get(i).getSection(j).getNumSlots(); ++k) {
-	    			for(int l = 0; l < Checked.size(); ++l) {
-			    		String CheckBox_name = Checked.get(l).getText();
-			    		
+    		Course temp_course = new Course();
+    		//System.out.println(courses.get(i).getExclusion());
+    		boolean[] fulfils = new boolean[Checked.size()];
+    		for(int l = 0; l < Checked.size(); ++l){
+    			fulfils[l] = false;
+    			String CheckBox_name = Checked.get(l).getText();
+  		    	for(int j = 0; j < courses.get(i).getNumSections(); ++j) {
+  		    		//System.out.println(courses.get(i).getSection(j).getSectionID());
+		    		Section temp_section = new Section();
+		    		for(int k = 0; k < courses.get(i).getSection(j).getNumSlots(); ++k) {
+		    			Slot temp_slot = courses.get(i).getSection(j).getSlot(k);
 			    		if(CheckBox_name.contentEquals("AM")) {
-			    			System.out.println(courses.get(i).getSection(j).getSlot(k).getStartHour());
-			    			//if(courses.get(i).getSlot(j).get
-			    			
-			    			
-			    			continue;
+			    			//System.out.println(courses.get(i).getSection(j).getSlot(k).getStartHour());
+			    			if(temp_slot.getStartHour() < 12) {
+			    				fulfils[l] = true;
+			    				temp_section.addSlot(temp_slot);
+			    			}
 			    		}else if(CheckBox_name.contentEquals("PM")) {
-			    			
-			    			continue;
+			    			if(temp_slot.getStartHour() >= 12) {
+			    				fulfils[l] = true;
+			    				temp_section.addSlot(temp_slot);
+			    			}
+			    		}else if(CheckBox_name.contentEquals("Monday")) {
+			    			if(temp_slot.getDay() == 0) {
+			    				fulfils[l] = true;
+			    				temp_section.addSlot(temp_slot);
+			    			}
+			    		}else if(CheckBox_name.contentEquals("Tuesday")) {
+			    			if(temp_slot.getDay() == 1) {
+			    				fulfils[l] = true;
+			    				temp_section.addSlot(temp_slot);
+			    			}
+			    		}else if(CheckBox_name.contentEquals("Wednesday")) {
+			    			if(temp_slot.getDay() == 2) {
+			    				fulfils[l] = true;
+			    				temp_section.addSlot(temp_slot);
+			    			}
+			    		}else if(CheckBox_name.contentEquals("Thursday")) {
+			    			if(temp_slot.getDay() == 3) {
+			    				fulfils[l] = true;
+			    				temp_section.addSlot(temp_slot);
+			    			}
+			    		}else if(CheckBox_name.contentEquals("Friday")) {
+			    			if(temp_slot.getDay() == 4) {
+			    				fulfils[l] = true;
+			    				temp_section.addSlot(temp_slot);
+			    			}
+			    		}else if(CheckBox_name.contentEquals("Saturday")) {
+			    			if(temp_slot.getDay() == 5) {
+			    				fulfils[l] = true;
+			    				temp_section.addSlot(temp_slot);
+			    			}
+			    		}else if(CheckBox_name.contentEquals("Common Core")) {
+			    			if(courses.get(i).checkCC()) {
+			    				fulfils[l] = true;
+			    				temp_section.addSlot(temp_slot);
+			    			}
+			    		}else if(CheckBox_name.contentEquals("No Exclusion")) {
+			    			if(courses.get(i).getExclusion() == "null") {
+			    				System.out.println("Hello");
+			    				fulfils[l] = true;
+			    				temp_section.addSlot(temp_slot);
+			    			}
+			    		}else if(CheckBox_name.contentEquals("With Labs or Tutorial")) {
+			    			String temp_T = courses.get(i).getSection(j).getSectionID().substring(0, 1);
+			    			String temp_LA = courses.get(i).getSection(j).getSectionID().substring(0, 2);
+			    			if(temp_T.contentEquals("T") || temp_T.contentEquals("LA")) {
+			    				fulfils[l] = true;
+			    				temp_section.addSlot(temp_slot);
+			    			}
 			    		}
-	    		
-	    		/*for(int weekday = 0; weekday < DAYS.length; ++weekday) {
-	    			if(CheckBox_name.contentEquals(DAYS[weekday])) {
-	    				for(int j = 0; j < courses.size(); ++j) {
-	        				for(int k = 0; k < courses.get(i).getNumSlots(); ++k) {
-	        					if(courses.get(j).getSlot(k).getDay() == weekday+1 && Filtered.indexOf(courses.get(i)) == -1) {
-	        						Filtered.add(courses.get(i));
-	        					}
-	        				}
-	        			}
-	    				break;
-	    			}
-	    		}*/
-	    			}
-    			}	
+		    		}
+		    		if(fulfils[l] == true) {
+		    			temp_section.setSectionID(courses.get(i).getSection(j).getSectionID());
+		    			temp_course.addSection(temp_section);
+		    		}
+			}
+      		}
+    		temp_course.setTitle(courses.get(i).getTitle());
+    		temp_course.setDescription(courses.get(i).getDescription());
+    		temp_course.setExclusion(courses.get(i).getExclusion());
+       		for(int l = 0; l < fulfils.length; ++l) {
+    			if(fulfils[l] == false)
+    				break;
+    			if(l == fulfils.length-1)
+    			Filtered.add(temp_course);
     		}
     	}
     	
+    
+    	String filter_console = scraper.printCourses(Filtered);
+    	textAreaConsole.setText(filter_console);
     }
     
     
@@ -257,6 +307,7 @@ public class Controller {
     	    	With_Labs_Tutorial.setSelected(false);
     	    	selectALL.setText("Select All");
     		}
+    		checkboxfilter();
     }
     
     @FXML

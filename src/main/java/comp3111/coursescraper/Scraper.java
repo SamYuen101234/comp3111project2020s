@@ -99,21 +99,26 @@ public class Scraper {
 	}
 	
 	String printCourses(List<Course> courses) {
+		
     	Set<String> allInstructor = new HashSet<String>();
     	Set<String> unavailableInstructor = new HashSet<String>();
     	LocalTime time = LocalTime.parse("03:10PM", DateTimeFormatter.ofPattern("hh:mma", Locale.US));
     	if(courses == null) return "404 Not Found: Invalid base URL or term or subject";
     	else {
+    		
     		String result = "";
     		int noOfSection = 0;
 	    	for (Course c : courses) {
+	    		//System.out.println(c.getTitle());
 	    		noOfSection += c.getNumSections();
 	    		String SID = "";
 	    		result += c.getTitle() + "\n";
 	    		for (int i = 0; i < c.getNumSections(); i++) {
+	    			//System.out.println(c.getSection(i).getSectionID());
 	    			Section s = c.getSection(i);
 	    			result += s;
 	    			allInstructor.addAll(s.getAllInstructor());
+	    			//System.out.println(c.getSection(i).getAllInstructor().size());
 	    			unavailableInstructor.addAll(s.getInstructorConstraint(time));
 	    		}
 	    		result += "\n";
@@ -132,7 +137,9 @@ public class Scraper {
 	    	}
 	    	
 	    	return result + "\n" + additionalInfo;
+	    	
     	}
+    	
     }
 
 	private void addSection(HtmlElement e, Course c, boolean secondRow) {
