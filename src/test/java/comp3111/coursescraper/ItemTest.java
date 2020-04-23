@@ -28,14 +28,6 @@ public class ItemTest {
 		s.setVenue("Principal Office");
 		assertEquals(s.getVenue(), "Principal Office");
 	}
-
-	@Test
-	public void testSetStart() {
-		Slot s = new Slot();
-		LocalTime time = LocalTime.parse("03:10PM", DateTimeFormatter.ofPattern("hh:mma", Locale.US));
-		s.setStart("03:10PM");
-		assertEquals(s.getStart(), time);
-	}
 	
 	@Test
 	public void testScraper() {

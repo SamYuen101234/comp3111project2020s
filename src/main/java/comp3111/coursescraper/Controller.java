@@ -39,7 +39,7 @@ import java.util.HashSet;
 public class Controller {
 	List<String> subjects;
 	List<Course> courses;
-	List<Section> enrollments;
+	HashMap<String, ArrayList<Section>> enrollments;
 
     @FXML
     private Tab tabMain;
@@ -100,9 +100,14 @@ public class Controller {
     
     private Scraper scraper = new Scraper();
     
+    /**
+     * Method to set the textAreaConsole with the scraped information.
+     * Invalid sections and slots will also be removed after printing the information.
+     */
     @FXML
     void printAllSubjectCourses() {
-    	textAreaConsole.setText(scraper.printCourses(courses));
+    	textAreaConsole.setText(scraper.printCourses(courses, true));
+    	courses = scraper.removeInvalid(courses);
     }
     
     @FXML
@@ -248,11 +253,16 @@ public class Controller {
     	}
     }
 
+    /**
+     * Method to search all the courses from the given input in textfield.
+     * This method will be invoked when search button in the main tab is clicked.
+     */
     @FXML
     void search() {
     	textAreaConsole.clear();
     	courses = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),textfieldSubject.getText());
-    	textAreaConsole.setText(scraper.printCourses(courses));
+    	textAreaConsole.setText(scraper.printCourses(courses, true));
+    	courses = scraper.removeInvalid(courses);
     	
     	//Add a random block on Saturday
     	AnchorPane ap = (AnchorPane)tabTimetable.getContent();

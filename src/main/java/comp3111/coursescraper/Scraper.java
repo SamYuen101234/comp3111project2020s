@@ -16,6 +16,9 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTable;
 import com.gargoylesoftware.htmlunit.html.DomText;
 import java.util.Vector;
+
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -98,7 +101,13 @@ public class Scraper {
 		client.getOptions().setJavaScriptEnabled(false);
 	}
 	
-	String printCourses(List<Course> courses) {
+	/**
+	 * Method to transform list of course to string
+	 * @param courses List of course to be printed
+	 * @param printExtraInfo True if extra information is required to be printed
+	 * @return String of result
+	 */
+	String printCourses(List<Course> courses, boolean printExtraInfo) {
     	Set<String> allInstructor = new HashSet<String>();
     	Set<String> unavailableInstructor = new HashSet<String>();
     	LocalTime time = LocalTime.parse("03:10PM", DateTimeFormatter.ofPattern("hh:mma", Locale.US));
@@ -117,8 +126,8 @@ public class Scraper {
 	    			unavailableInstructor.addAll(s.getInstructorConstraint(time));
 	    		}
 	    		result += "\n";
-	    		
 	    	}
+	    	if(!printExtraInfo) return result;
 	    	String additionalInfo = "";
 	    	additionalInfo += "Total number of different sections: " + Integer.toString(noOfSection) + "\n";
 	    	additionalInfo += "Total number of course: " + Integer.toString(courses.size()) + "\n";
@@ -134,12 +143,67 @@ public class Scraper {
 	    	return result + "\n" + additionalInfo;
     	}
     }
+	
+	/**
+	 * Method to remove invalid sections and slots from the courses.
+	 * Sections with sectionID begins other than 'L', 'T', 'LA' and 'LX' are invalid.
+	 * Sections with more than 3 slots are invalid.
+	 * Slots with start time earlier than 09:00AM is invalid.
+	 * Slots with end time later than 10:00PM is invalid.
+	 * @param courses The courses with invalid sections or slots to be removed
+	 * @return List<Course> with only valid sections and slots
+	 */
+	List<Course> removeInvalid(List<Course> courses) {
+		Section s = new Section();
+		Slot t = new Slot();
+		List<Course> result = new ArrayList<Course>();
+		for(Course c: courses) {
+			for(int i = 0; i < c.getNumSections(); ++i) {
+				s = c.getSection(i);
+				if(!s.getSectionID().substring(0, 1).equals("L")
+						&& !s.getSectionID().substring(0, 1).equals("T")
+						&& !s.getSectionID().substring(0, 2).equals("LA")
+						&& !s.getSectionID().substring(0, 2).equals("LX")) {
+					c.removeSection(i);
+					--i;
+				}
+				else {
+					for(int j = 0; j < s.getNumSlots(); ++j) {
+						t = s.getSlot(j);
+						if(t.getStart() == null) {
+							s.removeSlot(j);
+							--j;
+						}
+						else {
+							LocalTime minStart = LocalTime.parse("09:00AM", DateTimeFormatter.ofPattern("hh:mma", Locale.US));
+							LocalTime maxEnd = LocalTime.parse("10:00PM", DateTimeFormatter.ofPattern("hh:mma", Locale.US));
+							if(t.getStart().isBefore(minStart) || t.getEnd().isAfter(maxEnd)) {
+								s.removeSlot(j);
+								--j;
+							}
+						}
+					}
+					if(s.getNumSlots() > 3) {
+						c.removeSection(i);
+						--i;
+					}
+				}
+			}
+			if(c.getNumSections() > 0) {
+				result.add(c);
+			}
+		}
+		return result;
+	}
 
+	/**
+	 * Method to add a section to the course
+	 * @param e The HtmlElement to get information from
+	 * @param c The course to which the section will be added
+	 * @param secondRow True if it is a new section, otherwise false
+	 */
 	private void addSection(HtmlElement e, Course c, boolean secondRow) {
 		
-		//Times
-		LocalTime minStart = LocalTime.parse("09:00AM", DateTimeFormatter.ofPattern("hh:mma", Locale.US));
-		LocalTime maxEnd = LocalTime.parse("10:00PM", DateTimeFormatter.ofPattern("hh:mma", Locale.US));
 		String times[] =  e.getChildNodes().get(secondRow ? 0 : 3).asText().split("\n");
 		//Handle time with dates
 		if(times.length != 1) times = times[1].split(" ");
@@ -160,30 +224,34 @@ public class Scraper {
 			if(sectionID.substring(0, 1).equals("T") || sectionID.substring(0, 2).equals("LA")) {
 				c.setLabsOrTutorial();
 			}
-			else if(!sectionID.substring(0, 1).equals("L") && !sectionID.substring(0, 2).equals("LX")) return;
 			s.setSectionID(sectionID);
 		}
 		else s = c.getSection(c.getNumSections()-1);
 		
 		//Add to course list
-		if (!times[0].equals("TBA")) {
+		if(times[0].equals("TBA")) {
+			Slot t = new Slot();
+			for(int i = 0; i < temp.getLength(); i += 2) {
+				t.addInstructor(temp.get(i).getTextContent());
+			}
+			s.addSlot(t);
+		}
+		else {
 			LocalTime start = LocalTime.parse(times[1], DateTimeFormatter.ofPattern("hh:mma", Locale.US));
 			LocalTime end = LocalTime.parse(times[3], DateTimeFormatter.ofPattern("hh:mma", Locale.US));
-			if(!start.isBefore(minStart) && !end.isAfter(maxEnd)) {
-				for (int j = 0; j < times[0].length(); j+=2) {
-					String code = times[0].substring(j , j + 2);
-					if (Slot.DAYS_MAP.get(code) == null)
-						break;
-					Slot t = new Slot();
-					t.setDay(Slot.DAYS_MAP.get(code));
-					t.setStart(start);
-					t.setEnd(end);
-					t.setVenue(venue);
-					for(int i = 0; i < temp.getLength(); i += 2) {
-						t.addInstructor(temp.get(i).getTextContent());
-					}
-					s.addSlot(t);
+			for (int j = 0; j < times[0].length(); j+=2) {
+				String code = times[0].substring(j , j + 2);
+				if (Slot.DAYS_MAP.get(code) == null)
+					break;
+				Slot t = new Slot();
+				t.setDay(Slot.DAYS_MAP.get(code));
+				t.setStart(start);
+				t.setEnd(end);
+				if(venue != "TBA") t.setVenue(venue);
+				for(int i = 0; i < temp.getLength(); i += 2) {
+					t.addInstructor(temp.get(i).getTextContent());
 				}
+				s.addSlot(t);
 			}
 		}
 		c.addSection(s);
@@ -214,6 +282,13 @@ public class Scraper {
 	}
 
 
+	/**
+	 * Method to scrape all the courses from the required URL
+	 * @param baseurl The baseurl of the website
+	 * @param term The term of the course
+	 * @param sub The subject of the course
+	 * @return List<Course> of all courses from the baseurl, term and subject
+	 */
 	public List<Course> scrape(String baseurl, String term, String sub) {
 		
 		HtmlPage page;
@@ -258,7 +333,7 @@ public class Scraper {
 				if (e != null && !e.getAttribute("class").contains("newsect"))
 					addSection(e, c, true);
 			}
-			if(c.getNumSections() != 0) result.add(c);
+			result.add(c);
 		}
 		client.close();
 		return result;
