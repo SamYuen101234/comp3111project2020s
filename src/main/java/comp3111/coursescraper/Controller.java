@@ -14,6 +14,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -24,6 +25,11 @@ import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.beans.value.ObservableValue;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.scene.control.cell.CheckBoxTableCell;
 
 import java.util.Random;
 import java.util.List;
@@ -47,7 +53,7 @@ import java.lang.Object;
 public class Controller {
 	List<String> subjects;
 	List<Course> courses;
-	List<Course> enrollments;
+	private List<List_row> enrollments = new Vector<>();
 
     @FXML
     private Tab tabMain;
@@ -152,7 +158,7 @@ public class Controller {
     @FXML
     private TableView<List_row> List_table = new TableView<>();
     
-    private ObservableList<List_row> toObservableList = FXCollections.observableArrayList();
+    public static ObservableList<List_row> toObservableList = FXCollections.observableArrayList();
     
     
     @FXML
@@ -168,7 +174,7 @@ public class Controller {
     private TableColumn<List_row, String> instructor = new TableColumn<>("Instructor");
 
     @FXML
-    private TableColumn<List_row, Void> enroll = new TableColumn<>("Enroll");
+    private TableColumn<List_row, Boolean> enroll = new TableColumn<>("Enroll");
     
     Vector<CheckBox> getAllCheckBox(){
     	Vector<CheckBox> CheckBoxes = new Vector<CheckBox>();
@@ -216,71 +222,93 @@ public class Controller {
     			fulfils[l] = false;
     			String CheckBox_name = Checked.get(l).getText();
   		    	for(int j = 0; j < courses.get(i).getNumSections(); ++j) {
-		    		Section temp_section = new Section();
+		    		//Section temp_section = new Section();
+		    		boolean fulfil = false;
 		    		for(int k = 0; k < courses.get(i).getSection(j).getNumSlots(); ++k) {
 		    			Slot temp_slot = courses.get(i).getSection(j).getSlot(k);
 			    		if(CheckBox_name.contentEquals("AM")) {
 			    			if(temp_slot.getStartHour() < 12) {
+			    				fulfil = true;
 			    				fulfils[l] = true;
-			    				temp_section.addSlot(temp_slot);
+			    				//temp_section.addSlot(temp_slot);
 			    			}
 			    		}else if(CheckBox_name.contentEquals("PM")) {
 			    			if(temp_slot.getStartHour() >= 12) {
+			    				fulfil = true;
 			    				fulfils[l] = true;
-			    				temp_section.addSlot(temp_slot);
+			    				//temp_section.addSlot(temp_slot);
 			    			}
 			    		}else if(CheckBox_name.contentEquals("Monday")) {
 			    			if(temp_slot.getDay() == 0) {
+			    				fulfil = true;
 			    				fulfils[l] = true;
-			    				temp_section.addSlot(temp_slot);
+			    				//temp_section.addSlot(temp_slot);
 			    			}
 			    		}else if(CheckBox_name.contentEquals("Tuesday")) {
 			    			if(temp_slot.getDay() == 1) {
+			    				fulfil = true;
 			    				fulfils[l] = true;
-			    				temp_section.addSlot(temp_slot);
+			    				//temp_section.addSlot(temp_slot);
 			    			}
 			    		}else if(CheckBox_name.contentEquals("Wednesday")) {
 			    			if(temp_slot.getDay() == 2) {
+			    				fulfil = true;
 			    				fulfils[l] = true;
-			    				temp_section.addSlot(temp_slot);
+			    				//temp_section.addSlot(temp_slot);
 			    			}
 			    		}else if(CheckBox_name.contentEquals("Thursday")) {
 			    			if(temp_slot.getDay() == 3) {
+			    				fulfil = true;
 			    				fulfils[l] = true;
-			    				temp_section.addSlot(temp_slot);
+			    				//temp_section.addSlot(temp_slot);
 			    			}
 			    		}else if(CheckBox_name.contentEquals("Friday")) {
 			    			if(temp_slot.getDay() == 4) {
+			    				fulfil = true;
 			    				fulfils[l] = true;
-			    				temp_section.addSlot(temp_slot);
+			    				//temp_section.addSlot(temp_slot);
 			    			}
 			    		}else if(CheckBox_name.contentEquals("Saturday")) {
 			    			if(temp_slot.getDay() == 5) {
+			    				fulfil = true;
 			    				fulfils[l] = true;
-			    				temp_section.addSlot(temp_slot);
+			    				//temp_section.addSlot(temp_slot);
 			    			}
 			    		}else if(CheckBox_name.contentEquals("Common Core")) {
 			    			if(courses.get(i).checkCC()) {
+			    				fulfil = true;
 			    				fulfils[l] = true;
-			    				temp_section.addSlot(temp_slot);
+			    				//temp_section.addSlot(temp_slot);
 			    			}
 			    		}else if(CheckBox_name.contentEquals("No Exclusion")) {
 			    			if(courses.get(i).getExclusion() == "null") {
+			    				fulfil = true;
 			    				fulfils[l] = true;
-			    				temp_section.addSlot(temp_slot);
+			    				//temp_section.addSlot(temp_slot);
 			    			}
 			    		}else if(CheckBox_name.contentEquals("With Labs or Tutorial")) {
 			    			String temp_T = courses.get(i).getSection(j).getSectionID().substring(0, 1);
 			    			String temp_LA = courses.get(i).getSection(j).getSectionID().substring(0, 2);
-			    			if(temp_T.contentEquals("T") || temp_T.contentEquals("LA")) {
+			    			if(temp_T.contentEquals("T") || temp_LA.contentEquals("LA")) {
+			    				fulfil = true;
 			    				fulfils[l] = true;
-			    				temp_section.addSlot(temp_slot);
+			    				//temp_section.addSlot(temp_slot);
 			    			}
 			    		}
 		    		}
-		    		if(fulfils[l] == true) {
-		    			temp_section.setSectionID(courses.get(i).getSection(j).getSectionID());
-		    			temp_course.addSection(temp_section);
+		    		if(fulfil == true) {
+		    			if(temp_course.getNumSections() == 0)
+		    				temp_course.addSection(courses.get(i).getSection(j));
+		    			else {
+			    			for (int m = 0; m < temp_course.getNumSections(); ++m) {
+			    				System.out.println("hkust");
+			    				if(temp_course.getSection(m).getSectionID().contentEquals(courses.get(i).getSection(j).getSectionID()))
+			    					break;
+			    				if(m == temp_course.getNumSections()-1)
+			    					temp_course.addSection(courses.get(i).getSection(j));
+			    			}
+		    			}
+		    			fulfil = false;
 		    		}
   		    	}
       		}
@@ -291,18 +319,27 @@ public class Controller {
     			if(fulfils[l] == false)
     				break;
     			if(l == fulfils.length-1)
-    			Filtered.add(temp_course);
+    				Filtered.add(temp_course);
     		}
     	}
     	if(Checked.size() > 0)
     	{
     		String filter_console = scraper.printCourses(Filtered);
     		textAreaConsole.setText(filter_console);
+    		for(int i = 0; i < Filtered.size(); ++i) {
+    			for(int j = 0; j < Filtered.get(i).getNumSections(); ++j) {
+    				System.out.println(Filtered.get(i).getSection(j).getSectionID());
+    				for(int k = 0; k < Filtered.get(i).getSection(j).getNumSlots(); ++k) {
+    					System.out.println(Filtered.get(i).getSection(j).getSlot(k));
+    				}
+    			}
+    		}
     	}else {
     		String search_console = scraper.printCourses(courses);
     		textAreaConsole.setText(search_console);
-    	}    
+    	}
     	List_View(Filtered);
+    	
     }
     
     
@@ -344,13 +381,14 @@ public class Controller {
     	    	selectALL.setText("Select All");
     		}
     		checkboxfilter();
-    		
     }
-    
     
     //Task 3 List
     @SuppressWarnings("unchecked")
-    void List_View(List<Course> courses) {    	
+    void List_View(List<Course> courses) {
+    	List_table.getItems().clear();
+    	List_table.setEditable(true);
+    	enroll.setEditable(true);
     	List<List_row> list_rows = new Vector<>();
     	for(int i = 0; i < courses.size(); ++i) {
     		Course course = courses.get(i);
@@ -359,59 +397,60 @@ public class Controller {
     			for(int k = 0; k <courses.get(i).getSection(j).getNumSlots(); ++k) {
     				Slot slot = section.getSlot(k);
     				List_row list_row  = new List_row(course, section, slot);
-    				//System.out.println(list_row.getCourse_code());
-    				//System.out.println(list_row.getSection());
-    				//System.out.println(list_row.getCourse_name());
-    				//System.out.println(list_row.getInstructor());
     				list_rows.add(list_row);
     			}
     		}
     	}
-    	
-    	for(int i = 0; i < list_rows.size(); ++i) {
-			System.out.println(list_rows.get(i).getCourse_code());
-			System.out.println(list_rows.get(i).getSection());
-			System.out.println(list_rows.get(i).getCourse_name());
-			System.out.println(list_rows.get(i).getInstructor());
-    	}
-    	
-    	toObservableList.addAll(list_rows);
     	List_table.setItems(toObservableList);
     	course_code.setCellValueFactory(new PropertyValueFactory<>("course_code"));
     	section.setCellValueFactory(new PropertyValueFactory<>("section"));
     	course_name.setCellValueFactory(new PropertyValueFactory<>("course_name"));
     	instructor.setCellValueFactory(new PropertyValueFactory<>("instructor"));
-    	List_table.getColumns().setAll(course_code, section, course_name, instructor);
-    	addCheckBoxToTable();
-    }
-    
-    private void addCheckBoxToTable() {
-    	Callback<TableColumn<List_row, Void>, TableCell<List_row, Void>> cellFactory = 
-    			new Callback<TableColumn<List_row, Void>, TableCell<List_row, Void>>(){
+    	enroll.setCellValueFactory(new PropertyValueFactory<>("select"));
+       	enroll.setCellValueFactory(new Callback<CellDataFeatures<List_row,Boolean>, ObservableValue<Boolean>>(){
     		@Override
-    		public TableCell<List_row, Void> call(final TableColumn<List_row, Void> param) {
-    			final TableCell<List_row, Void> cell = new TableCell<List_row, Void>() {
-    				private final CheckBox cb = new CheckBox();
-    				
+    		public ObservableValue<Boolean> call(CellDataFeatures<List_row, Boolean> param) {
+    			List_row temp = (List_row)param.getValue().clone();
+    			SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(temp.getSelect());
+    			booleanProp.addListener(new ChangeListener<Boolean>() {
     				@Override
-    				public void updateItem(Void item, boolean empty) {
-    					super.updateItem(item, empty);
-    					if (empty) {
-                            setGraphic(null);
-                        } else {
-                            setGraphic(cb);
-                        }
+    				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
+                            Boolean newValue) {
+    					temp.setSelect(newValue);
+    					System.out.println("Course code:"+temp.getCourse_code());
+    					System.out.println(temp.getSection());
+    					System.out.println("oldvalue:" + oldValue);
+    					System.out.println("newvalue:" + newValue);
+    					
+    					//enrollments = toObservableList;
+    					if(oldValue == false && newValue == true) {
+    						enrollments.add(temp);
+    						//Course enrolled_course = new Course();
+    						//enrolled_course.setTitle(temp.getCourse_code() + temp.getCourse_name());
+    						//Section enrolled_section = new Section();
+    						//enrolled_section.setSectionID(temp.getSection());
+    						
+    					}
+    					else if(oldValue == true && newValue == false)
+    						enrollments.remove(temp);
+    					
+    					
     				}
-    			};
-    			return cell;
+    			});
+    			return booleanProp;
     		}
-    		
-    	};
-    	enroll.setCellFactory(cellFactory);
-    	List_table.getColumns().add(enroll);
-
+    	});
+    	enroll.setCellFactory(new Callback<TableColumn<List_row, Boolean>,TableCell<List_row, Boolean>>(){
+    			@Override
+    		    public TableCell<List_row, Boolean> call(TableColumn<List_row, Boolean>p){
+    				CheckBoxTableCell<List_row, Boolean> cell = new CheckBoxTableCell<List_row, Boolean>();
+    				cell.setAlignment(Pos.CENTER);
+    				return cell;
+    		}
+    	});
+    	toObservableList.addAll(list_rows);
+    	List_table.getColumns().setAll(course_code, section, course_name, instructor, enroll);
     }
-    
     
     
     @FXML
