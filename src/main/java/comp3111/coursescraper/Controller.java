@@ -119,7 +119,7 @@ public class Controller {
     
     @FXML
     void printAllSubjectCourses() {
-    	scraper.printCourses(courses);
+    	textAreaConsole.setText(scraper.printCourses(courses));
     }
     
     @FXML
@@ -573,13 +573,8 @@ public class Controller {
     	// Print total no. of courses in console (size of allCourses list)
     	textAreaConsole.setText("Total Number of Courses fetched: " + courses.size() + "\n");    	
     	
-    	// Call "Select all" function in "Filter" tab
-    	
-    	
-    	
     	// Change "Main" tab text input in "Subject" to "(All Subjects)" and enable the show all courses button
     	textfieldSubject.setText("(All Subjects)");
-    	
     	buttonPrintAllSubjectCourses.setDisable(false);
 
     	// Enables the "Find SFQ with my enrolled courses" button
@@ -623,11 +618,10 @@ public class Controller {
     	textAreaConsole.clear();
     	
     	// Retrieve enrolled course
-    	Vector<Course> enrolled = new Vector<Course>();
-    	Vector<Course> testEmpty = new Vector<Course>();
-    	Course c1 = new Course();Course c2 = new Course();Course c3 = new Course();Course c4 = new Course();Course c5 = new Course();Course c6 = new Course();
-    	c1.setTitle("COMP 1029C");c2.setTitle("ELEC 1100");c3.setTitle("MECH 4720");c4.setTitle("ELEC 1200");c5.setTitle("COMP 3111H");c6.setTitle("IEDA 6100A");
-    	enrolled.add(c1);enrolled.add(c2);enrolled.add(c3);enrolled.add(c4);enrolled.add(c5);enrolled.add(c6);
+    	List<String> enrolled = new Vector<String>(enrollments.size());
+    	for(int i=0;i<enrollments.size();++i) {
+    		enrolled.add(enrollments.get(i).getCourse_code());
+    	}
     	
     	// if the enrolled course list is empty, tell the user that there is no enrolled course, and do nothing else
     	//if(Empty.isEmpty()){
@@ -636,29 +630,30 @@ public class Controller {
     	}
     	else {
     		// Change the enrolled course list to HashSet
-        	HashSet<String> enrolledC = new HashSet<String>();
-        	for(Course c: enrolled) {
-        		enrolledC.add(c.getTitle());
+        	HashSet<String> enrolledH = new HashSet<String>(enrolled.size());
+        	for(String s:enrolled) {
+        		enrolledH.add(s);
         	}
         	
         	// Scrape enrolled course list together with their average SFQ from the URL
-        	HashMap<String,Float> enrolledSfq = scraper.scrapeCoursesSFQ(textfieldSfqUrl.getText(),enrolledC);
+        	HashMap<String,Float> enrolledSfq = scraper.scrapeCoursesSFQ(textfieldSfqUrl.getText(),enrolledH);
         	
         	// Display wrong web-page in console if return value is null
         	if(enrolledSfq==null) {
         		textAreaConsole.setText("The inputted URL is not valid");
         	}
         	else {
-        		// Sort the enrolled course
-        		TreeMap<String,Float> sortenrolled = new TreeMap<>(enrolledSfq);
         		// Display result in console
-        		for (Map.Entry<String,Float> entry: sortenrolled.entrySet()) {
-        			if(entry.getValue()==null) {
-        				textAreaConsole.setText(textAreaConsole.getText() + entry.getKey() + ": (had no SFQ rating available)\n");
-        			} else {
-        				textAreaConsole.setText(textAreaConsole.getText() + entry.getKey() + ": " + (float)Math.round(entry.getValue()*10)/10 + "%\n");
+        		for(String s:enrolled) {
+        			if(!enrolledSfq.containsKey(s)) {
+        				textAreaConsole.setText(textAreaConsole.getText() + "The course " + s + " does not appear in the provided URL\n");
         			}
-        			
+        			else if(enrolledSfq.get(s)==null) {
+        				textAreaConsole.setText(textAreaConsole.getText() + s + ": (had no SFQ rating available)\n");
+        			}
+        			else {
+        				textAreaConsole.setText(textAreaConsole.getText() + s + ": " + (float)Math.round(enrolledSfq.get(s)*10)/10 + "%\n");
+        			}
         		}
         	}
     	}
@@ -685,6 +680,12 @@ public class Controller {
     	randomLabel.setMaxHeight(60);
     
     	ap.getChildren().addAll(randomLabel);
+    	
+    	// Disable print all subject course button
+    	buttonPrintAllSubjectCourses.setDisable(true);
+
+    	// Enables the "Find SFQ with my enrolled courses" button
+    	buttonSfqEnrollCourse.setDisable(false);
     }
     
    
