@@ -36,7 +36,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.time.LocalTime;
 import java.util.Locale;
@@ -48,12 +50,14 @@ import java.util.TreeMap;
 import java.util.HashSet;
 import javafx.util.Callback;
 import java.lang.Object;
+import java.util.Collections;
 
 
 public class Controller {
 	List<String> subjects;
 	List<Course> courses;
-	private List<List_row> enrollments = new Vector<>();
+	List<List_row> enrollments = new Vector<>();
+
 
     @FXML
     private Tab tabMain;
@@ -301,7 +305,6 @@ public class Controller {
 		    				temp_course.addSection(courses.get(i).getSection(j));
 		    			else {
 			    			for (int m = 0; m < temp_course.getNumSections(); ++m) {
-			    				System.out.println("hkust");
 			    				if(temp_course.getSection(m).getSectionID().contentEquals(courses.get(i).getSection(j).getSectionID()))
 			    					break;
 			    				if(m == temp_course.getNumSections()-1)
@@ -326,14 +329,6 @@ public class Controller {
     	{
     		String filter_console = scraper.printCourses(Filtered);
     		textAreaConsole.setText(filter_console);
-    		for(int i = 0; i < Filtered.size(); ++i) {
-    			for(int j = 0; j < Filtered.get(i).getNumSections(); ++j) {
-    				System.out.println(Filtered.get(i).getSection(j).getSectionID());
-    				for(int k = 0; k < Filtered.get(i).getSection(j).getNumSlots(); ++k) {
-    					System.out.println(Filtered.get(i).getSection(j).getSlot(k));
-    				}
-    			}
-    		}
     	}else {
     		String search_console = scraper.printCourses(courses);
     		textAreaConsole.setText(search_console);
@@ -382,23 +377,65 @@ public class Controller {
     		}
     		checkboxfilter();
     }
+    public class List_rowComparator implements Comparator<List_row> {
+        @Override
+        public int compare(List_row o1, List_row o2) {
+            return o1.getCourse_code().compareTo(o2.getCourse_code());
+        }
+    }
+    
+ 
+    String print() {
+    	String result = "";
+    	Collections.sort(enrollments, new List_rowComparator());
+    	for(int i = 0; i < enrollments.size(); ++i) {
+    		if(i == 0) {
+    			result += enrollments.get(i).getTitle() + "\n";
+    			result += enrollments.get(i).getSection() + "\n";
+    			for(int j = 0; j < enrollments.get(i).getNumSlot(); ++j) {
+    				result += enrollments.get(i).getSlot()[i] + "\n";
+    			}
+    		}else {
+    			if(enrollments.get(i).getCourse_code().contentEquals(enrollments.get(i-1).getCourse_code())) {
+    				result += enrollments.get(i).getSection() + "\n";
+    				for(int j = 0; j < enrollments.get(i).getNumSlot(); ++j) {
+        				result += enrollments.get(i).getSlot()[j] + "\n";
+        			}
+    			}else {
+    				result += "\n";
+    				result += enrollments.get(i).getTitle() + "\n";
+        			result += enrollments.get(i).getSection() + "\n";
+        			for(int j = 0; j < enrollments.get(i).getNumSlot(); ++j) {
+        				result += enrollments.get(i).getSlot()[j] + "\n";
+        			}
+    			}
+    		}
+    	}
+    	//System.out.println(result);
+    	//System.out.println("");
+    	return result;
+    }
     
     //Task 3 List
     @SuppressWarnings("unchecked")
-    void List_View(List<Course> courses) {
+    void List_View(List<Course> filtered) {
     	List_table.getItems().clear();
     	List_table.setEditable(true);
-    	enroll.setEditable(true);
     	List<List_row> list_rows = new Vector<>();
-    	for(int i = 0; i < courses.size(); ++i) {
-    		Course course = courses.get(i);
-    		for(int j = 0; j < courses.get(i).getNumSections(); ++j) {
+    	for(int i = 0; i < filtered.size(); ++i) {
+    		Course course = filtered.get(i);
+    		for(int j = 0; j < filtered.get(i).getNumSections(); ++j) {
     			Section section = course.getSection(j);
-    			for(int k = 0; k <courses.get(i).getSection(j).getNumSlots(); ++k) {
-    				Slot slot = section.getSlot(k);
-    				List_row list_row  = new List_row(course, section, slot);
-    				list_rows.add(list_row);
+    			List_row list_row  = new List_row(course, section);
+    			String course_code = list_row.getCourse_code();
+    			String sectionid = list_row.getSection();
+    			for(int k = 0; k < enrollments.size(); ++k) {
+        			if(course_code.contentEquals(enrollments.get(k).getCourse_code()) && 
+        					sectionid.contentEquals(enrollments.get(k).getSection())) {
+        				list_row.setSelect(true);
+        			}
     			}
+    			list_rows.add(list_row);
     		}
     	}
     	List_table.setItems(toObservableList);
@@ -410,32 +447,51 @@ public class Controller {
        	enroll.setCellValueFactory(new Callback<CellDataFeatures<List_row,Boolean>, ObservableValue<Boolean>>(){
     		@Override
     		public ObservableValue<Boolean> call(CellDataFeatures<List_row, Boolean> param) {
-    			List_row temp = (List_row)param.getValue().clone();
+    			List_row temp = param.getValue();
     			SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(temp.getSelect());
+    			//System.out.println(temp.getSelect());
     			booleanProp.addListener(new ChangeListener<Boolean>() {
     				@Override
     				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
                             Boolean newValue) {
-    					temp.setSelect(newValue);
-    					System.out.println("Course code:"+temp.getCourse_code());
-    					System.out.println(temp.getSection());
-    					System.out.println("oldvalue:" + oldValue);
-    					System.out.println("newvalue:" + newValue);
-    					
-    					//enrollments = toObservableList;
-    					if(oldValue == false && newValue == true) {
-    						enrollments.add(temp);
-    						//Course enrolled_course = new Course();
-    						//enrolled_course.setTitle(temp.getCourse_code() + temp.getCourse_name());
-    						//Section enrolled_section = new Section();
-    						//enrolled_section.setSectionID(temp.getSection());
-    						
+    					String course_code_temp = temp.getCourse_code();
+       					String section_type_temp = temp.getSectionType();
+    					String sectionid_temp = temp.getSection();
+    					for(int i = 0; i < enrollments.size(); ++i) {
+    						String course_code = enrollments.get(i).getCourse_code();
+    						String section_type = enrollments.get(i).getSectionType();
+    						String sectionid = enrollments.get(i).getSection();
+    						if(course_code_temp.contentEquals(course_code) && section_type_temp.contentEquals(section_type)
+    								&&  !sectionid_temp.contentEquals(sectionid)) {
+    							return;
+    						}
     					}
-    					else if(oldValue == true && newValue == false)
-    						enrollments.remove(temp);
     					
-    					
-    				}
+    					if(oldValue == false && newValue == true) {
+    						temp.setSelect(newValue);
+    						enrollments.add(temp);  
+    						String result = print();
+    						textAreaConsole.clear();
+    						textAreaConsole.setText(result);
+    						
+    					}else if(oldValue == true && newValue == false) {
+    						String temp_code = temp.getCourse_code();
+    						String temp_sectionid = temp.getSection();
+    						for(int i = 0; i < enrollments.size(); ++i) {
+    							String code = enrollments.get(i).getCourse_code();
+    							String section = enrollments.get(i).getSection();
+    							if(temp_code.contentEquals(code) && temp_sectionid.contentEquals(section)) {
+    								enrollments.remove(i);
+    							}
+    						}
+    						temp.setSelect(newValue);
+    						//System.out.println(tf);
+    						String result = print();
+    						textAreaConsole.clear();
+    						textAreaConsole.setText(result);
+    					}
+       				}
+    				
     			});
     			return booleanProp;
     		}
