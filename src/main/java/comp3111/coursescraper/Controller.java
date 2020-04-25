@@ -58,7 +58,6 @@ public class Controller {
 	List<Course> courses;
 	List<List_row> enrollments = new Vector<>();
 
-
     @FXML
     private Tab tabMain;
 
@@ -465,6 +464,24 @@ public class Controller {
     								&&  !sectionid_temp.contentEquals(sectionid)) {
     							return;
     						}
+    						if(newValue == false) {
+    							continue;
+    						}
+    						else {
+	    						for(int j = 0; j < temp.getNumSlot(); ++j){
+	    							LocalTime start_temp = temp.getSlot(j).getStart();
+	    							LocalTime end_temp = temp.getSlot(j).getEnd();
+		    						for(int k = 0; k < enrollments.get(i).getNumSlot(); ++k) {
+		    							LocalTime start = enrollments.get(i).getSlot(k).getStart();
+		    							LocalTime end = enrollments.get(i).getSlot(k).getEnd();
+		    							if((start_temp.isBefore(start) && end_temp.isBefore(end)) || 
+		    									(start_temp.isAfter(start) && end_temp.isAfter(end))) {
+		    								continue;
+		    							}
+		    							return;
+		    						}
+	    						}
+    						}
     					}
     					
     					if(oldValue == false && newValue == true) {
@@ -485,10 +502,15 @@ public class Controller {
     							}
     						}
     						temp.setSelect(newValue);
-    						//System.out.println(tf);
-    						String result = print();
     						textAreaConsole.clear();
-    						textAreaConsole.setText(result);
+    						if(enrollments.size()>0) {
+    							String result = print();
+    							textAreaConsole.setText(result);
+    							
+    						}else {
+    							String filter_console = scraper.printCourses(filtered);
+    							textAreaConsole.setText(filter_console);
+    						}
     					}
        				}
     				

@@ -129,6 +129,13 @@ public class List_row {
 	public String getSectionType() {
 		return this.section_type;
 	}
+	
+	public Slot getSlot(int i) {
+		if (i >= 0 && i < numSlots)
+			return slots[i];
+		return null;
+	}
+
 
 	
 	
