@@ -33,6 +33,7 @@ private static final int DEFAULT_MAX_SLOT = 10;
 		return result;
 	}
 	
+	
 	public void addSlot(Slot s) {
 		if (numSlots >= DEFAULT_MAX_SLOT)
 			return;
@@ -60,6 +61,10 @@ private static final int DEFAULT_MAX_SLOT = 10;
 	
 	public String getSectionID() {
 		return this.sectionID;
+	}
+	
+	public void setNumSlots(int num) {
+		this.numSlots = num;
 	}
 	
 	public int getNumSlots() {
