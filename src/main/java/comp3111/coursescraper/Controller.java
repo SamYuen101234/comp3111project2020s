@@ -55,7 +55,7 @@ import java.util.Collections;
 
 public class Controller {
 	List<String> subjects;
-	List<Course> courses;
+	List<Course> courses = new Vector<Course>();
 	List<List_row> enrollments = new Vector<>();
 
     @FXML
@@ -87,6 +87,7 @@ public class Controller {
 
     @FXML
     private Tab tabTimetable;
+    AnchorPane ap = (AnchorPane)tabTimetable.getContent();
 
     @FXML
     private Tab tabAllSubject;
@@ -535,7 +536,6 @@ public class Controller {
     	List_table.getColumns().setAll(course_code, section, course_name, instructor, enroll);
     }
     
-    
     @FXML
     void allSubjectSearch() {
     	// Scrape all subjects from given URL and term
@@ -679,23 +679,139 @@ public class Controller {
     	courses = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),textfieldSubject.getText());
     	textAreaConsole.setText(scraper.printCourses(courses, true));
     	courses = scraper.removeInvalid(courses);
-    	
-    	//Add a random block on Saturday
-    	AnchorPane ap = (AnchorPane)tabTimetable.getContent();
-    	Label randomLabel = new Label("COMP1022\nL1");
-    	Random r = new Random();
-    	double start = (r.nextInt(10) + 1) * 20 + 40;
-
-    	randomLabel.setBackground(new Background(new BackgroundFill(Color.BLUE, CornerRadii.EMPTY, Insets.EMPTY)));
-    	randomLabel.setLayoutX(600.0);
-    	randomLabel.setLayoutY(start);
-    	randomLabel.setMinWidth(100.0);
-    	randomLabel.setMaxWidth(100.0);
-    	randomLabel.setMinHeight(60);
-    	randomLabel.setMaxHeight(60);
-    
-    	ap.getChildren().addAll(randomLabel);
     }
     
+    @FXML
+    void enterTabTimetable() {
+//    	updateTimetable(enrollments); ///For testing
+    	if(tabTimetable.isSelected() == true) {
+    		if(enrollments.size() == 0) {
+    			if(courses.size() > 0) {
+//    				int count = 0;
+//        			for(Course c: courses) {
+//        				if(count > 5) break;
+//        				for(int i = 0; i < c.getNumSections(); ++i) {
+//        					
+//        				}
+//        			}
+    				
+//    				Section s = courses.get(0).getSection(0);
+//    				List_row temp = new List_row(courses.get(0), s);
+//    				List<List_row> enrollList = new Vector<List_row>();
+//    				enrollList.add(temp);
+//    				updateTimetable(enrollList);
+        		}
+    		}
+    		updateTimetable(enrollments);
+    	}
+    }
+    
+    void addToTimetable(List_row e) {
+    	Random r = new Random();
+        List<List<Integer>> usedColor = new ArrayList<>();
+
+		String tempString = e.getCourse_code() + "\n" + e.getSection();
+		List<Integer> tempColor = new ArrayList<Integer>();
+		int c = 0;
+		do {
+			for(int i = 0; i < 3; ++i) {
+				r = new Random();
+				c = r.nextInt(8)*32;//get 1 random number [0, 255] step 32
+				tempColor.add(c);
+			}
+		}
+		while((tempColor.get(0) == tempColor.get(1) && tempColor.get(0) == tempColor.get(2))
+				|| usedColor.contains(tempColor));
+		usedColor.add(tempColor);
+		Background tempBackground = new Background(new BackgroundFill(Color.rgb(tempColor.get(0), tempColor.get(1), tempColor.get(2), 0.3), CornerRadii.EMPTY, Insets.EMPTY));
+		
+		//Create labels
+		for(int i = 0; i < e.getNumSlot(); ++i) {
+			Slot t = e.getSlot(i);
+			Label l = new Label(tempString);
+			l.setId(e.getCourse_code() + e.getSection() + i);
+			l.setTextFill(Color.rgb(255, 255, 255, 1));
+			l.setBackground(tempBackground); 
+			l.setLayoutX(102.0 + t.getDay() * 100.0); //left of label [102.0, 602.0] -> [Mo, Sa]
+			l.setLayoutY(35.5 + (t.getStartHour() - 9 + t.getStartMinute()/60.0) * 21.0);  //top of label [25.0, 277.0] -> [0900, 2100]
+			l.setMinWidth(100.0); //width of label should be 100.0
+	    	l.setMaxWidth(100.0);
+	    	l.setMinHeight(t.getDuration() * 21.0); //height of label should be 21.0/60.0 * minutes
+	    	l.setMaxHeight(t.getDuration() * 21.0);
+	    	ap.getChildren().addAll(l);
+		}
+    }
+    
+    void updateTimetable(List<List_row> enrollList) {
+    	
+    	
+    	Random r = new Random();
+    	List<List<Integer>> usedColor = new ArrayList<>();
+//    	List<Label> labels = new ArrayList<Label>();
+
+    	//Loop through all enrollments
+    	for(List_row e: enrollList) {
+			String tempString = e.getCourse_code() + "\n" + e.getSection();
+    		List<Integer> tempColor = new ArrayList<Integer>();
+    		int c = 0;
+    		do {
+    			for(int i = 0; i < 3; ++i) {
+    				r = new Random();
+    				c = r.nextInt(8)*32;//get 1 random number [0, 255] step 32
+    				tempColor.add(c);
+    			}
+    		}
+    		while((tempColor.get(0) == tempColor.get(1) && tempColor.get(0) == tempColor.get(2))
+    				|| usedColor.contains(tempColor));
+    		usedColor.add(tempColor);
+    		Background tempBackground = new Background(new BackgroundFill(Color.rgb(tempColor.get(0), tempColor.get(1), tempColor.get(2), 0.3), CornerRadii.EMPTY, Insets.EMPTY));
+    		
+    		//Create labels
+    		for(int i = 0; i < e.getNumSlot(); ++i) {
+    			Slot t = e.getSlot(i);
+    			Label l = new Label(tempString);
+    			l.setId(e.getCourse_code() + e.getSection() + i);
+    			l.setTextFill(Color.rgb(255, 255, 255, 1));
+    			l.setBackground(tempBackground); 
+    			l.setLayoutX(102.0 + t.getDay() * 100.0); //left of label [102.0, 602.0] -> [Mo, Sa]
+    			l.setLayoutY(35.5 + (t.getStartHour() - 9 + t.getStartMinute()/60.0) * 21.0);  //top of label [25.0, 277.0] -> [0900, 2100]
+    			l.setMinWidth(100.0); //width of label should be 100.0
+    	    	l.setMaxWidth(100.0);
+    	    	l.setMinHeight(t.getDuration() * 21.0); //height of label should be 21.0/60.0 * minutes
+    	    	l.setMaxHeight(t.getDuration() * 21.0);
+    	    	ap.getChildren().addAll(l);
+    		}
+    		
+    	}
+    	
+    	
+    	
+    	
+    	
+//    	Label randomLabel = new Label("COMP1022 L1");
+//    	Label randomLabel2 = new Label("COMP1021 L2");
+//    	randomLabel.setTextFill(Color.rgb(255, 255, 255, 1));
+//    	randomLabel2.setTextFill(Color.rgb(255, 255, 255, 1));
+//
+//    	randomLabel.setBackground(new Background(new BackgroundFill(Color.rgb(255, 0, 0, 0.5), CornerRadii.EMPTY, Insets.EMPTY)));
+//    	randomLabel.setLayoutX(102.0); //left of label [102.0, 602.0] -> [Mo, Sa]
+//    	randomLabel.setLayoutY(25.0 + 21.0/2.0); //top of label [25.0, 277.0] -> [0900, 2100]
+//    	randomLabel.setMinWidth(100.0); //width of label should be 100.0
+//    	randomLabel.setMaxWidth(100.0);
+//    	randomLabel.setMinHeight(21.0/60.0 * 120); //height of label should be 21.0/60.0 * minutes
+//    	randomLabel.setMaxHeight(21.0/60.0 * 120);
+//    	
+//    	randomLabel2.setBackground(new Background(new BackgroundFill(Color.rgb(0, 255, 255, 0.5), CornerRadii.EMPTY, Insets.EMPTY)));
+//    	randomLabel2.setLayoutX(102.0);
+//    	randomLabel2.setLayoutY(25.0 + 21.0/2.0 + 21.0/60.0 * 90);
+//    	randomLabel2.setMinWidth(100.0);
+//    	randomLabel2.setMaxWidth(100.0);
+//    	randomLabel2.setMinHeight(21.0/60.0 * 120);
+//    	randomLabel2.setMaxHeight(21.0/60.0 * 120);
+//    
+//    	ap.getChildren().addAll(randomLabel);
+//    	ap.getChildren().addAll(randomLabel2);
+    	
+    }
    
 }

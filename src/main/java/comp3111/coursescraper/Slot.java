@@ -55,6 +55,9 @@ public class Slot {
 	public int getEndMinute() {
 		return end.getMinute();
 	}
+	public double getDuration() {
+		return end.getHour() - start.getHour() + (end.getMinute() - start.getMinute())/60.0;
+	}
 	/**
 	 * @return the start
 	 */
