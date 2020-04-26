@@ -711,21 +711,7 @@ public class Controller {
     void addToTimetable(List_row e) {
     	AnchorPane ap = (AnchorPane)tabTimetable.getContent();
     	Random r = new Random();
-//        List<List<Integer>> usedColor = new ArrayList<>();
-
 		String tempString = e.getCourse_code() + "\n" + e.getSection();
-//		List<Integer> tempColor = new ArrayList<Integer>();
-//		int c = 0;
-//		do {
-//			for(int i = 0; i < 3; ++i) {
-//				r = new Random();
-//				c = r.nextInt(8)*32;//get 1 random number [0, 255] step 32
-//				tempColor.add(c);
-//			}
-//		}
-//		while((tempColor.get(0) == tempColor.get(1) && tempColor.get(0) == tempColor.get(2))
-//				|| usedColor.contains(tempColor));
-//		usedColor.add(tempColor);
 		String tempColor = e.getSection().split(" ")[1];
 		int c1 = r.nextInt(25) * 10 + Character.getNumericValue(tempColor.charAt(1));
 		int c2 = r.nextInt(25) * 10 + Character.getNumericValue(tempColor.charAt(2));
