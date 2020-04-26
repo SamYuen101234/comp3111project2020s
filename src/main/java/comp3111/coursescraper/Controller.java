@@ -17,6 +17,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableView;
@@ -87,7 +88,6 @@ public class Controller {
 
     @FXML
     private Tab tabTimetable;
-    AnchorPane ap = (AnchorPane)tabTimetable.getContent();
 
     @FXML
     private Tab tabAllSubject;
@@ -492,7 +492,8 @@ public class Controller {
     					
     					if(oldValue == false && newValue == true) {
     						temp.setSelect(newValue);
-    						enrollments.add(temp);  
+    						enrollments.add(temp); 
+    						addToTimetable(temp);
     						String result = print();
     						textAreaConsole.clear();
     						textAreaConsole.setText(result);
@@ -504,6 +505,7 @@ public class Controller {
     							String code = enrollments.get(i).getCourse_code();
     							String section = enrollments.get(i).getSection();
     							if(temp_code.contentEquals(code) && temp_sectionid.contentEquals(section)) {
+    								removeFromTimetable(enrollments.get(i));
     								enrollments.remove(i);
     							}
     						}
@@ -702,34 +704,39 @@ public class Controller {
 //    				updateTimetable(enrollList);
         		}
     		}
-    		updateTimetable(enrollments);
+//    		updateTimetable(enrollments);
     	}
     }
     
     void addToTimetable(List_row e) {
+    	AnchorPane ap = (AnchorPane)tabTimetable.getContent();
     	Random r = new Random();
-        List<List<Integer>> usedColor = new ArrayList<>();
+//        List<List<Integer>> usedColor = new ArrayList<>();
 
 		String tempString = e.getCourse_code() + "\n" + e.getSection();
-		List<Integer> tempColor = new ArrayList<Integer>();
-		int c = 0;
-		do {
-			for(int i = 0; i < 3; ++i) {
-				r = new Random();
-				c = r.nextInt(8)*32;//get 1 random number [0, 255] step 32
-				tempColor.add(c);
-			}
-		}
-		while((tempColor.get(0) == tempColor.get(1) && tempColor.get(0) == tempColor.get(2))
-				|| usedColor.contains(tempColor));
-		usedColor.add(tempColor);
-		Background tempBackground = new Background(new BackgroundFill(Color.rgb(tempColor.get(0), tempColor.get(1), tempColor.get(2), 0.3), CornerRadii.EMPTY, Insets.EMPTY));
+//		List<Integer> tempColor = new ArrayList<Integer>();
+//		int c = 0;
+//		do {
+//			for(int i = 0; i < 3; ++i) {
+//				r = new Random();
+//				c = r.nextInt(8)*32;//get 1 random number [0, 255] step 32
+//				tempColor.add(c);
+//			}
+//		}
+//		while((tempColor.get(0) == tempColor.get(1) && tempColor.get(0) == tempColor.get(2))
+//				|| usedColor.contains(tempColor));
+//		usedColor.add(tempColor);
+		String tempColor = e.getSection().split(" ")[1];
+		int c1 = r.nextInt(25) * 10 + Character.getNumericValue(tempColor.charAt(1));
+		int c2 = r.nextInt(25) * 10 + Character.getNumericValue(tempColor.charAt(2));
+		int c3 = r.nextInt(2) * 100 + Character.getNumericValue(tempColor.charAt(4)) * 10 + Character.getNumericValue(tempColor.charAt(3));
+		Background tempBackground = new Background(new BackgroundFill(Color.rgb(c1, c2, c3, 0.3), CornerRadii.EMPTY, Insets.EMPTY));
 		
 		//Create labels
 		for(int i = 0; i < e.getNumSlot(); ++i) {
 			Slot t = e.getSlot(i);
 			Label l = new Label(tempString);
-			l.setId(e.getCourse_code() + e.getSection() + i);
+			l.setId(e.getCourse_code() + e.getSection().split(" ")[0] + i);
 			l.setTextFill(Color.rgb(255, 255, 255, 1));
 			l.setBackground(tempBackground); 
 			l.setLayoutX(102.0 + t.getDay() * 100.0); //left of label [102.0, 602.0] -> [Mo, Sa]
@@ -742,47 +749,55 @@ public class Controller {
 		}
     }
     
-    void updateTimetable(List<List_row> enrollList) {
-    	
-    	
-    	Random r = new Random();
-    	List<List<Integer>> usedColor = new ArrayList<>();
-//    	List<Label> labels = new ArrayList<Label>();
-
-    	//Loop through all enrollments
-    	for(List_row e: enrollList) {
-			String tempString = e.getCourse_code() + "\n" + e.getSection();
-    		List<Integer> tempColor = new ArrayList<Integer>();
-    		int c = 0;
-    		do {
-    			for(int i = 0; i < 3; ++i) {
-    				r = new Random();
-    				c = r.nextInt(8)*32;//get 1 random number [0, 255] step 32
-    				tempColor.add(c);
-    			}
-    		}
-    		while((tempColor.get(0) == tempColor.get(1) && tempColor.get(0) == tempColor.get(2))
-    				|| usedColor.contains(tempColor));
-    		usedColor.add(tempColor);
-    		Background tempBackground = new Background(new BackgroundFill(Color.rgb(tempColor.get(0), tempColor.get(1), tempColor.get(2), 0.3), CornerRadii.EMPTY, Insets.EMPTY));
-    		
-    		//Create labels
-    		for(int i = 0; i < e.getNumSlot(); ++i) {
-    			Slot t = e.getSlot(i);
-    			Label l = new Label(tempString);
-    			l.setId(e.getCourse_code() + e.getSection() + i);
-    			l.setTextFill(Color.rgb(255, 255, 255, 1));
-    			l.setBackground(tempBackground); 
-    			l.setLayoutX(102.0 + t.getDay() * 100.0); //left of label [102.0, 602.0] -> [Mo, Sa]
-    			l.setLayoutY(35.5 + (t.getStartHour() - 9 + t.getStartMinute()/60.0) * 21.0);  //top of label [25.0, 277.0] -> [0900, 2100]
-    			l.setMinWidth(100.0); //width of label should be 100.0
-    	    	l.setMaxWidth(100.0);
-    	    	l.setMinHeight(t.getDuration() * 21.0); //height of label should be 21.0/60.0 * minutes
-    	    	l.setMaxHeight(t.getDuration() * 21.0);
-    	    	ap.getChildren().addAll(l);
-    		}
-    		
+    void removeFromTimetable(List_row e) {
+    	AnchorPane ap = (AnchorPane)tabTimetable.getContent();
+    	Set<Node> temp = ap.lookupAll(e.getCourse_code() + e.getSection().split(" ")[0]);
+    	for(Node n: temp) {
+    		ap.getChildren().remove(n);
     	}
+    }
+    
+//    void updateTimetable(List<List_row> enrollList) {
+//    	
+//    	
+//    	Random r = new Random();
+//    	List<List<Integer>> usedColor = new ArrayList<>();
+////    	List<Label> labels = new ArrayList<Label>();
+//
+//    	//Loop through all enrollments
+//    	for(List_row e: enrollList) {
+//			String tempString = e.getCourse_code() + "\n" + e.getSection();
+//    		List<Integer> tempColor = new ArrayList<Integer>();
+//    		int c = 0;
+//    		do {
+//    			for(int i = 0; i < 3; ++i) {
+//    				r = new Random();
+//    				c = r.nextInt(8)*32;//get 1 random number [0, 255] step 32
+//    				tempColor.add(c);
+//    			}
+//    		}
+//    		while((tempColor.get(0) == tempColor.get(1) && tempColor.get(0) == tempColor.get(2))
+//    				|| usedColor.contains(tempColor));
+//    		usedColor.add(tempColor);
+//    		Background tempBackground = new Background(new BackgroundFill(Color.rgb(tempColor.get(0), tempColor.get(1), tempColor.get(2), 0.3), CornerRadii.EMPTY, Insets.EMPTY));
+//    		
+//    		//Create labels
+//    		for(int i = 0; i < e.getNumSlot(); ++i) {
+//    			Slot t = e.getSlot(i);
+//    			Label l = new Label(tempString);
+//    			l.setId(e.getCourse_code() + e.getSection() + i);
+//    			l.setTextFill(Color.rgb(255, 255, 255, 1));
+//    			l.setBackground(tempBackground); 
+//    			l.setLayoutX(102.0 + t.getDay() * 100.0); //left of label [102.0, 602.0] -> [Mo, Sa]
+//    			l.setLayoutY(35.5 + (t.getStartHour() - 9 + t.getStartMinute()/60.0) * 21.0);  //top of label [25.0, 277.0] -> [0900, 2100]
+//    			l.setMinWidth(100.0); //width of label should be 100.0
+//    	    	l.setMaxWidth(100.0);
+//    	    	l.setMinHeight(t.getDuration() * 21.0); //height of label should be 21.0/60.0 * minutes
+//    	    	l.setMaxHeight(t.getDuration() * 21.0);
+//    	    	ap.getChildren().addAll(l);
+//    		}
+//    		
+//    	}
     	
     	
     	
@@ -811,7 +826,7 @@ public class Controller {
 //    
 //    	ap.getChildren().addAll(randomLabel);
 //    	ap.getChildren().addAll(randomLabel2);
-    	
-    }
+//    	
+//    }
    
 }
