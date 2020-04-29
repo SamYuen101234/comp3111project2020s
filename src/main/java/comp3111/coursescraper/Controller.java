@@ -542,6 +542,9 @@ public class Controller {
 
     @FXML
     void allCoursesSearch() {
+    	// Clean up console 
+    	textAreaConsole.clear();
+    	
     	// Scrape all subjects from given URL and term
     	subjects = scraper.scrapeSubject(textfieldURL.getText(), textfieldTerm.getText());
     	
@@ -599,6 +602,7 @@ public class Controller {
     		TreeMap<String,Vector<Float>> sortInstructors = new TreeMap<>(instructors);
     	
     		// Display result in console
+    		textAreaConsole.setText("SFQ ratings of instructors:\n");
     		for (Map.Entry<String,Vector<Float>> entry: sortInstructors.entrySet()) {
     			// Calculate the average SFQ rating
     			if(entry.getValue().get(0)==null) {
@@ -644,6 +648,7 @@ public class Controller {
         	}
         	else {
         		// Display result in console
+        		textAreaConsole.setText("SFQ ratings of enrolled course(s):\n");
         		for(String s:enrolled) {
         			if(!enrolledSfq.containsKey(s)) {
         				textAreaConsole.setText(textAreaConsole.getText() + "The course " + s + " does not appear in the provided URL\n");
