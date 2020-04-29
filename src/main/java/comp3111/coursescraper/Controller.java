@@ -530,7 +530,10 @@ public class Controller {
     	List_table.getColumns().setAll(course_code, section, course_name, instructor, enroll);
     }
     
-    
+    /**
+     * Method to search all subjects obtained from the user-inputed URL in the "Main" tab.
+     * This method will be invoked when "All Subject Search" button in the "All Subject Search" tab is clicked.
+     */
     @FXML
     void allSubjectSearch() {
     	// Scrape all subjects from given URL and term
@@ -540,6 +543,10 @@ public class Controller {
     	textAreaConsole.setText("Total Number of Categories/Code Prefix: " + subjects.size());
     }
 
+    /**
+     * Method to search all courses obtained from the user-inputed URL in the "Main" tab.
+     * This method will be invoked when "All Courses Search" button in the "All Subject Search" tab is clicked.
+     */
     @FXML
     void allCoursesSearch() {
     	// Clean up console 
@@ -584,7 +591,10 @@ public class Controller {
     	buttonSfqEnrollCourse.setDisable(false);
     }
 
-
+    /**
+     * Method to show the SFQ rating(s) of the all instructors obtained from the user-inputed URL.
+     * This method will be invoked when "List instructors' average SFQ" button in the "SFQ" tab is clicked.
+     */
     @FXML
     void findInstructorSfq() {
     	// Clean up console 
@@ -616,6 +626,10 @@ public class Controller {
     	}
     }
 
+    /**
+     * Method to show the SFQ rating(s) of the enrolled course(s) obtained from the user-inputed URL.
+     * This method will be invoked when "Find SFQ with my enrolled courses" button in the "SFQ" tab is clicked.
+     */
     @FXML
     void findSfqEnrollCourse() {
     	// Clean up console 
