@@ -2,6 +2,8 @@ package comp3111.coursescraper;
 
 import java.awt.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -13,6 +15,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.TilePane;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -50,7 +53,6 @@ import java.util.TreeMap;
 import java.util.HashSet;
 import javafx.util.Callback;
 import java.lang.Object;
-import java.util.Collections;
 
 
 public class Controller {
@@ -464,7 +466,7 @@ public class Controller {
     								&&  !sectionid_temp.contentEquals(sectionid)) {
     							return;
     						}
-    						if(newValue == false) {
+    						/*if(newValue == false) {
     							continue;
     						}
     						else {
@@ -481,7 +483,7 @@ public class Controller {
 		    							return;
 		    						}
 	    						}
-    						}
+    						}*/
     					}
     					
     					if(oldValue == false && newValue == true) {
