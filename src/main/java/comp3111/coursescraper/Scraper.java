@@ -265,7 +265,7 @@ public class Scraper {
 				if (e != null && !e.getAttribute("class").contains("newsect"))
 					addSection(e, c, true);
 			}
-			result.add(c);
+			if(c.getNumSections() != 0) result.add(c);
 		}
 		client.close();
 		return result;
