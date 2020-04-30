@@ -30,6 +30,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.concurrent.Task;
 
 import java.util.Random;
 import java.util.List;
@@ -540,7 +541,12 @@ public class Controller {
     	subjects = scraper.scrapeSubject(textfieldURL.getText(), textfieldTerm.getText());
 
     	// Record and display the total no. of subjects
-    	textAreaConsole.setText("Total Number of Categories/Code Prefix: " + subjects.size());
+    	// Display wrong web-page in console if return value is null
+    	if (subjects == null) {
+    		textAreaConsole.setText("The inputted URL is not valid");
+    	} else {
+    		textAreaConsole.setText("Total Number of Categories/Code Prefix: " + subjects.size());
+    	}
     }
 
     /**
@@ -556,39 +562,58 @@ public class Controller {
     	subjects = scraper.scrapeSubject(textfieldURL.getText(), textfieldTerm.getText());
     	
     	// Create a new list if there wasn't any. Otherwise clear the current courses list
-    	if(courses==null) {
-    		courses = new Vector<Course>();
-    	}
-    	else {
-    		courses.clear();
-    	}
-    	
-    	// Scrape all courses in each subject in subjects
-    	List<Course> courseOfSubject = new Vector<Course>();
-    	for (int i=0;i<subjects.size();++i) {
-    		if(!subjects.get(i).equals("MGMT")) {
-    			courseOfSubject = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),subjects.get(i));
+    	// Display wrong web-page in console if return value is null
+    	if (subjects == null) {
+    		textAreaConsole.setText("The inputted URL is not valid");
+    	} else{
+    		if(courses==null) {
+    			courses = new Vector<Course>();
     		}
-    		
-    		// Append all courses
-    		for(Course c:courseOfSubject) {
-    			courses.add(c);
+    		else {
+    			courses.clear();
     		}
-    		// Print "SUBJECT is done" on console
-    		System.out.println("SUBJECT is done");
-    		
-    		// Update progress bar by 1/(total no. of subjects)
-    		progressbar.setProgress((float)(1.0/subjects.size()*(i+1)));
-    	}
-    	// Print total no. of courses in console (size of allCourses list)
-    	textAreaConsole.setText("Total Number of Courses fetched: " + courses.size() + "\n");    	
     	
-    	// Change "Main" tab text input in "Subject" to "(All Subjects)" and enable the show all courses button
-    	textfieldSubject.setText("(All Subjects)");
-    	buttonPrintAllSubjectCourses.setDisable(false);
+    		// Scrape all courses in each subject in subjects
+    		//List<Course> courseOfSubject = new Vector<Course>();
+    		
+    		new Thread(){
+				public void run() {
+					List<Course> courseOfSubject = new Vector<Course>();
+					for (int i=0;i<subjects.size();++i) {
+		    			if(!subjects.get(i).equals("MGMT")) {
+		    				courseOfSubject = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),subjects.get(i));
+		    			}
+		    		
+		    			// Append all courses
+		    			for(Course c:courseOfSubject) {
+		    				courses.add(c);
+		    			}
+		    			// Print "SUBJECT is done" on console
+		    			System.out.println("SUBJECT is done");
+		    		
+		    			// Update progress bar by 1/(total no. of subjects)
+		    			
+		    			progressbar.setProgress((float)(1.0/subjects.size()*(i+1)));
+		    			try {
+		    				Thread.sleep(1); 
+		    			} catch(InterruptedException ex) {
+		    				Thread.currentThread().interrupt();
+		    			}
+		    		}
+					// Print total no. of courses in console (size of allCourses list)
+		    		textAreaConsole.setText("Total Number of Courses fetched: " + courses.size() + "\n");    	
+		    	
+		    		// Change "Main" tab text input in "Subject" to "(All Subjects)" and enable the show all courses button
+		    		textfieldSubject.setText("(All Subjects)");
+		    		buttonPrintAllSubjectCourses.setDisable(false);
 
-    	// Enables the "Find SFQ with my enrolled courses" button
-    	buttonSfqEnrollCourse.setDisable(false);
+		    		// Enables the "Find SFQ with my enrolled courses" button
+		    		buttonSfqEnrollCourse.setDisable(false);
+					
+				}
+				
+			}.start();
+    	}
     }
 
     /**
