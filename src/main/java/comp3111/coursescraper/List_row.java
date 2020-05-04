@@ -56,6 +56,14 @@ public class List_row {
 			this.section_type = firstchar;
 	}
 	
+	public String toString() {
+		String result = this.section + "\n";
+		for(int i = 0; i < numSlots; ++i) {
+			result += slots[i];
+		}
+		return result;
+	}
+	
 	/*@Override
 	public List_row clone() {
 		List_row new_class = new List_row();

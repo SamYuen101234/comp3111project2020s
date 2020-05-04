@@ -39,8 +39,9 @@ public class Slot {
 		return s;
 	}
 	public String toString() {
-		return DAYS[day] + start.toString() + "-" + end.toString() + "   " + venue;
-
+		if(start == null) return "";
+		else if(venue == null) return DAYS[day] + start.toString() + "-" + end.toString() + "   TBA\n";
+		else return DAYS[day] + start.toString() + "-" + end.toString() + "   " + venue + "\n";
 	}
 	public int getStartHour() {
 		return start.getHour();
@@ -53,6 +54,9 @@ public class Slot {
 	}
 	public int getEndMinute() {
 		return end.getMinute();
+	}
+	public double getDuration() {
+		return end.getHour() - start.getHour() + (end.getMinute() - start.getMinute())/60.0;
 	}
 	/**
 	 * @return the start
