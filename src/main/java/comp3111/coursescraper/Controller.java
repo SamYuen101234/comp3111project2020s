@@ -235,10 +235,9 @@ public class Controller {
 			    			if(temp_slot.getStartHour() < 12) {
 			    				fulfil = true;
 			    				fulfils[l] = true;
-			    				//temp_section.addSlot(temp_slot);
 			    			}
 			    		}else if(CheckBox_name.contentEquals("PM")) {
-			    			if(temp_slot.getStartHour() >= 12) {
+			    			if(temp_slot.getEndHour() > 12) {
 			    				fulfil = true;
 			    				fulfils[l] = true;
 			    				//temp_section.addSlot(temp_slot);
@@ -254,42 +253,49 @@ public class Controller {
 			    				fulfil = true;
 			    				fulfils[l] = true;
 			    				//temp_section.addSlot(temp_slot);
+
 			    			}
 			    		}else if(CheckBox_name.contentEquals("Wednesday")) {
 			    			if(temp_slot.getDay() == 2) {
 			    				fulfil = true;
 			    				fulfils[l] = true;
 			    				//temp_section.addSlot(temp_slot);
+
 			    			}
 			    		}else if(CheckBox_name.contentEquals("Thursday")) {
 			    			if(temp_slot.getDay() == 3) {
 			    				fulfil = true;
 			    				fulfils[l] = true;
 			    				//temp_section.addSlot(temp_slot);
+
 			    			}
 			    		}else if(CheckBox_name.contentEquals("Friday")) {
 			    			if(temp_slot.getDay() == 4) {
 			    				fulfil = true;
 			    				fulfils[l] = true;
 			    				//temp_section.addSlot(temp_slot);
+
 			    			}
 			    		}else if(CheckBox_name.contentEquals("Saturday")) {
 			    			if(temp_slot.getDay() == 5) {
 			    				fulfil = true;
 			    				fulfils[l] = true;
 			    				//temp_section.addSlot(temp_slot);
+
 			    			}
 			    		}else if(CheckBox_name.contentEquals("Common Core")) {
 			    			if(courses.get(i).checkCC()) {
 			    				fulfil = true;
 			    				fulfils[l] = true;
 			    				//temp_section.addSlot(temp_slot);
+
 			    			}
 			    		}else if(CheckBox_name.contentEquals("No Exclusion")) {
 			    			if(courses.get(i).getExclusion() == "null") {
 			    				fulfil = true;
 			    				fulfils[l] = true;
 			    				//temp_section.addSlot(temp_slot);
+
 			    			}
 			    		}else if(CheckBox_name.contentEquals("With Labs or Tutorial")) {
 			    			String temp_T = courses.get(i).getSection(j).getSectionID().substring(0, 1);
@@ -298,10 +304,11 @@ public class Controller {
 			    				fulfil = true;
 			    				fulfils[l] = true;
 			    				//temp_section.addSlot(temp_slot);
+
 			    			}
 			    		}
 		    		}
-		    		if(fulfil == true) {
+		    		/*if(fulfil == true) {
 		    			if(temp_course.getNumSections() == 0)
 		    				temp_course.addSection(courses.get(i).getSection(j));
 		    			else {
@@ -313,17 +320,17 @@ public class Controller {
 			    			}
 		    			}
 		    			fulfil = false;
-		    		}
+		    		}*/
   		    	}
       		}
-    		temp_course.setTitle(courses.get(i).getTitle());
+    		/*temp_course.setTitle(courses.get(i).getTitle());
     		temp_course.setDescription(courses.get(i).getDescription());
-    		temp_course.setExclusion(courses.get(i).getExclusion());
+    		temp_course.setExclusion(courses.get(i).getExclusion());*/
        		for(int l = 0; l < fulfils.length; ++l) {
     			if(fulfils[l] == false)
     				break;
     			if(l == fulfils.length-1)
-    				Filtered.add(temp_course);
+    				Filtered.add(courses.get(i));
     		}
     	}
     	if(Checked.size() > 0)
@@ -394,7 +401,7 @@ public class Controller {
     			result += enrollments.get(i).getTitle() + "\n";
     			result += enrollments.get(i).getSection() + "\n";
     			for(int j = 0; j < enrollments.get(i).getNumSlot(); ++j) {
-    				result += enrollments.get(i).getSlot()[i] + "\n";
+    				result += enrollments.get(i).getSlot()[j] + "\n";
     			}
     		}else {
     			if(enrollments.get(i).getCourse_code().contentEquals(enrollments.get(i-1).getCourse_code())) {
@@ -487,6 +494,7 @@ public class Controller {
     					}
     					
     					if(oldValue == false && newValue == true) {
+    						
     						temp.setSelect(newValue);
     						enrollments.add(temp);  
     						String result = print();
