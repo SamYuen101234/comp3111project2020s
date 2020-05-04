@@ -2,6 +2,9 @@ package comp3111.coursescraper;
 
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,7 +13,7 @@ import java.util.Locale;
 import java.time.format.DateTimeFormatter;
 
 public class Section {
-private static final int DEFAULT_MAX_SLOT = 3;
+private static final int DEFAULT_MAX_SLOT = 10;
 
 	private String sectionID;
 	private Slot [] slots;
@@ -25,7 +28,7 @@ private static final int DEFAULT_MAX_SLOT = 3;
 	public String toString() {
 		String result = this.sectionID + "\n";
 		for(int i = 0; i < numSlots; ++i) {
-			result += slots[i] + "\n";
+			result += slots[i];
 		}
 		return result;
 	}
@@ -79,11 +82,16 @@ private static final int DEFAULT_MAX_SLOT = 3;
 	public Set<String> getInstructorConstraint(LocalTime time) {
 		Set<String> result = new HashSet<String>();
 		for(int i = 0; i < numSlots; ++i) {
-			if(time.isAfter(slots[i].getStart()) && time.isBefore(slots[i].getEnd())){
+			if(slots[i].getStart() != null && slots[i].getDay() == 1 && time.isAfter(slots[i].getStart()) && time.isBefore(slots[i].getEnd())){
 				result.addAll(slots[i].getAllInstructor());
 			}
 		}
 		return result;
+	}
+	
+	public void removeSlot(int i) {
+		--this.numSlots;
+		this.slots = ArrayUtils.remove(this.slots, i);
 	}
 	
 }
