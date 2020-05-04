@@ -418,7 +418,7 @@ public class Scraper {
 				HtmlElement td = tr.getFirstByXPath(".//td[@colspan='3']");
 				if(td != null) {
 					String course = td.getChildNodes().get(0).asText();
-					course = course.substring(1,course.length()-1);
+					course = course.replaceAll("\\s+","");
 					// (3rd requirement: second column should contain the course title, and it should match the enrolled course)
 					if(enrolled.contains(course)) {
 						sfqTotal = 0F; number = 0;

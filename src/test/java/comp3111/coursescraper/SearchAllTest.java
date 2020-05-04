@@ -88,7 +88,7 @@ public class SearchAllTest extends ApplicationTest {
 		clickOn("#allSubjectSearch");
 		TextArea t2 = (TextArea)s.lookup("#textAreaConsole");
 		sleep(1000);
-		assertEquals(t2.getText(),"404 Not Found: Invalid base URL or term or subject\n");
+		assertEquals(t2.getText(),"The inputted URL is not valid");
 			
 	}
 	
@@ -102,7 +102,7 @@ public class SearchAllTest extends ApplicationTest {
 		
 		clickOn("#allCoursesSearch");
 		sleep(1000);
-		assertEquals(t2.getText(),"404 Not Found: Invalid base URL or term or subject\n");
+		assertEquals(t2.getText(),"The inputted URL is not valid");
 		
 	}
 }
