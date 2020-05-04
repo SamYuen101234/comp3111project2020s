@@ -18,7 +18,8 @@ import java.util.List;
 public class FilterListTest extends ApplicationTest {
 	private Scene s;
 	private List_row section1 = new List_row();
-	//private List_row section2 = new List_row();
+	private List_row section2 = new List_row();
+	private List_row section3 = new List_row();
 	private Controller controller = new Controller();
 	
 	@Before
@@ -28,12 +29,16 @@ public class FilterListTest extends ApplicationTest {
 		section1.setCourse_name("Software Engineer");
 		section1.setSection("L1");
 		controller.enrollments.add(section1);
-		/*section2.set_Instructor("SAM");
+		section2.set_Instructor("SAM");
 		section2.setCourse_code("COMP3311");
 		section2.setCourse_name("Database");
 		section2.setSection("L1");
-		controller.enrollments.add(section2);*/
-
+		controller.enrollments.add(section2);
+		section3.set_Instructor("SAM");
+		section3.setCourse_code("COMP3311");
+		section3.setCourse_name("Database");
+		section3.setSection("T1");
+		controller.enrollments.add(section3);
 	}
 
 	
