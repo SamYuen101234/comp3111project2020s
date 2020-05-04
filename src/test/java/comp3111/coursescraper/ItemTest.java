@@ -29,10 +29,5 @@ public class ItemTest {
 		assertEquals(s.getVenue(), "Principal Office");
 	}
 	
-	@Test
-	public void testScraper() {
-		Scraper scraper = new Scraper();
-		List<Course> v = scraper.scrape("https://w5.ab.ust.hk/wcq/cgi-bin/", "1910", "COMP");
-		assertEquals(v.get(0).getTitle(), "COMP 1001 - Exploring Multimedia and Internet Computing (3 units)");
-	}
+	
 }
