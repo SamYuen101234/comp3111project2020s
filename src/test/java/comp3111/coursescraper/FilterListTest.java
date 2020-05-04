@@ -14,21 +14,26 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
 import java.util.List;
-
-public class FilterTest extends ApplicationTest {
-	
+public class FilterListTest extends ApplicationTest {
 	private Scene s;
-	private List_row list_row = new List_row();
+	private List_row section1 = new List_row();
+	//private List_row section2 = new List_row();
+	private Controller controller = new Controller();
 	
 	@Before
 	public void setUp() throws Exception{
-		list_row.set_Instructor("SAM");
-		list_row.setCourse_code("COMP3111");
-		list_row.setCourse_name("Software Engineer");
-		list_row.setSection("L1");
-		list_row.setSelect(false);
+		section1.set_Instructor("SAM");
+		section1.setCourse_code("COMP3111");
+		section1.setCourse_name("Software Engineer");
+		section1.setSection("L1");
+		controller.enrollments.add(section1);
+		/*section2.set_Instructor("SAM");
+		section2.setCourse_code("COMP3311");
+		section2.setCourse_name("Database");
+		section2.setSection("L1");
+		controller.enrollments.add(section2);*/
+
 	}
 
 	
@@ -43,6 +48,7 @@ public class FilterTest extends ApplicationTest {
    		stage.show();
    		s = scene;
 	}
+
 	
 	@Test
 	public void testSelectAllButton() {
@@ -58,8 +64,8 @@ public class FilterTest extends ApplicationTest {
 	}
 	@Test
 	public void testCheckBox() {
-		clickOn("#tabAllSubject");
-		clickOn("#allCoursesSearch");
+		clickOn("#tabMain");
+		clickOn("#buttonSearchCourses");
 		sleep(1000);
 		clickOn("#tabFilter");
 		clickOn("#AM");
@@ -127,13 +133,16 @@ public class FilterTest extends ApplicationTest {
 	
 	@Test
 	public void testList_row() {
-		assertEquals("COMP3111", list_row.getCourse_code());
-		assertEquals("Software Engineer", list_row.getCourse_name());
-		assertEquals("L1", list_row.getSection());
-		assertEquals("SAM", list_row.getInstructor());
-
+		assertEquals("COMP3111", section1.getCourse_code());
+		assertEquals("Software Engineer", section1.getCourse_name());
+		assertEquals("L1", section1.getSection());
+		assertEquals("SAM", section1.getInstructor());
 	}
-	
+	@Test
+	public void testSelfPrint() {
+		String enrolledResult = controller.print();
+		System.out.println(enrolledResult);
+	}
 	
 
 }
