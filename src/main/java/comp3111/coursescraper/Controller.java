@@ -406,23 +406,24 @@ public class Controller {
     	Collections.sort(enrollments, new List_rowComparator());
     	for(int i = 0; i < enrollments.size(); ++i) {
     		if(i == 0) {
-    			result += enrollments.get(i).getTitle() + "\n";
-    			result += enrollments.get(i).getSection() + "\n";
-    			for(int j = 0; j < enrollments.get(i).getNumSlot(); ++j) {
-    				result += enrollments.get(i).getSlot()[j] + "\n";
-    			}
-    		}else {
-    			if(enrollments.get(i).getCourse_code().contentEquals(enrollments.get(i-1).getCourse_code())) {
+     			result += enrollments.get(i).getTitle() + "\n";
+     			result += enrollments.get(i).getSection() + "\n";
+     			for(int j = 0; j < enrollments.get(i).getNumSlot(); ++j) {
+     				//result += enrollments.get(i).getSlot()[i] + "\n";
+     				result += enrollments.get(i).getSlot()[j];
+     			}
+     		}else {
+     			if(enrollments.get(i).getCourse_code().contentEquals(enrollments.get(i-1).getCourse_code())) {
     				result += enrollments.get(i).getSection() + "\n";
     				for(int j = 0; j < enrollments.get(i).getNumSlot(); ++j) {
-        				result += enrollments.get(i).getSlot()[j] + "\n";
+        				result += enrollments.get(i).getSlot()[j];
         			}
     			}else {
     				result += "\n";
     				result += enrollments.get(i).getTitle() + "\n";
         			result += enrollments.get(i).getSection() + "\n";
         			for(int j = 0; j < enrollments.get(i).getNumSlot(); ++j) {
-        				result += enrollments.get(i).getSlot()[j] + "\n";
+        				result += enrollments.get(i).getSlot()[j];
         			}
     			}
     		}
@@ -430,8 +431,7 @@ public class Controller {
     	//System.out.println(result);
     	//System.out.println("");
     	return result;
-    }
-    
+    }    
     //Task 3 List
     @SuppressWarnings("unchecked")
     void List_View(List<Course> filtered) {
