@@ -103,7 +103,7 @@ public class Scraper {
 	
 
 	/**
-	 * Method to transform list of course to string
+	 * Method to transform list of all courses to string
 	 * @param courses List of course to be printed
 	 * @param printExtraInfo True if extra information is required to be printed
 	 * @return String of result
@@ -234,7 +234,10 @@ public class Scraper {
 			}
 			s.setSectionID(sectionID);
 		}
-		else s = c.getSection(c.getNumSections()-1);
+		else {
+			s = c.getSection(c.getNumSections()-1);
+			c.removeSection(c.getNumSections()-1);
+		}
 		
 		//Add to course list
 		if(times[0].equals("TBA")) {
