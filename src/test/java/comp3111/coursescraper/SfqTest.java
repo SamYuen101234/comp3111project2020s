@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
@@ -37,20 +38,26 @@ public class SfqTest extends ApplicationTest{
 		clickOn("#buttonInstructorSfq");
 		TextArea t2 = (TextArea)s.lookup("#textAreaConsole");
 		sleep(1000);
-		assertEquals(t2.getText(),"The inputted URL is not valid\n");
+		assertEquals(t2.getText(),"The inputted URL is not valid");
 	}
 	
 	@Test
 	public void testInvalidEnrolledUrl() {
 		clickOn("#tabMain");
 		clickOn("#buttonSearchCourses");
+		clickOn("#tabFilter");
+		clickOn("#Tuesday");
+		clickOn("#tabList");
+		// enroll???
+		
 		clickOn("#tabSfq");
 		TextField t = (TextField)s.lookup("#textfieldSfqUrl");
 		t.setText("http://sfq.ust.hk/results-wrong/eng-f19.html");
 		clickOn("#buttonSfqEnrollCourse");
 		TextArea t2 = (TextArea)s.lookup("#textAreaConsole");
 		sleep(1000);
-		assertEquals(t2.getText(),"The inputted URL is not valid\n");
+		assertEquals(t2.getText(),"The inputted URL is not valid");
+		//assertEquals(t2.getText(),"There are no enrolled course");
 	}
 	
 	@Test
