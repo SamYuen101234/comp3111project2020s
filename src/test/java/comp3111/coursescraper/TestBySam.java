@@ -11,30 +11,16 @@ public class TestBySam {
 	@Before
 	public void setUp() throws Exception{
 		course.setTitle("COMP3111");
-		course.setNumSlots(10);
+		course.setNumSections(1);
 		course.setDescription("Good grade");
-	
 	}
-
 	@Test
 	public void testCourseTitle() {
 		assertEquals("COMP3111", course.getTitle());
 	}
 	@Test
-	public void testNumSlots() {
-		assertEquals(10, course.getNumSlots());
-	}
-	@Test
 	public void testDescription() {
 		assertEquals("Good grade", course.getDescription());
-	}
-	@Test
-	public void testGetSlot() {
-		assertNull(course.getSlot(5));
-	}
-	@Test
-	public void testnullGetSlot() {
-		assertNull(course.getSlot(0));
 	}
 	@Test
 	public void testScaper() {
