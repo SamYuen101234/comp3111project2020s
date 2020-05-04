@@ -33,7 +33,7 @@ public class ItemTest {
 	public void testSetStart() {
 		Slot s = new Slot();
 		LocalTime time = LocalTime.parse("03:10PM", DateTimeFormatter.ofPattern("hh:mma", Locale.US));
-		s.setStart("03:10PM");
+		s.setStart(time);
 		assertEquals(s.getStart(), time);
 	}
 	
