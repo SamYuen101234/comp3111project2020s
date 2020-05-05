@@ -74,6 +74,10 @@ run {
 		systemProperty "java.library.path", "C:\tmp"
 		}
 }
+
+test {
+  testLogging.showStandardStreams = true
+}
 		
 //mainClassName = 'comp3111.coursescraper.MyApplication'
 mainClassName = 'main.Main'
