@@ -14,6 +14,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <VBox prefHeight="679.0" prefWidth="719.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp3111.coursescraper.Controller">
   <children>
@@ -95,7 +96,7 @@
                         </AnchorPane>
                     </content>
                   </Tab>
-                  <Tab fx:id="tabTimetable" onSelectionChanged="#enterTabTimetable" text="Timetable">
+                  <Tab fx:id="tabTimetable" text="Timetable">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="412.0" prefWidth="719.0">
                            <children>
@@ -128,6 +129,11 @@
                               <Label layoutX="60.0" layoutY="277.0" prefHeight="21.0" prefWidth="40.0" text="2100" />
                               <Label layoutX="60.0" layoutY="298.0" prefHeight="21.0" prefWidth="40.0" text="2200" />
                               <Label text="Display all enrolled courses as a box (see example in the demo program). Boxes contain course code only. They can be overlapped." />
+                              <Button fx:id="buttonRefresh" layoutX="2.0" layoutY="294.0" mnemonicParsing="false" onAction="#refreshTimetable" text="Refresh">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font>
+                              </Button>
                            </children>
                         </AnchorPane>
                     </content>

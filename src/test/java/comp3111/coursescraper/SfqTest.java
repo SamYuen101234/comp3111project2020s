@@ -41,24 +41,24 @@ public class SfqTest extends ApplicationTest{
 		assertEquals(t2.getText(),"The inputted URL is not valid");
 	}
 	
-	@Test
-	public void testInvalidEnrolledUrl() {
-		clickOn("#tabMain");
-		clickOn("#buttonSearchCourses");
-		clickOn("#tabFilter");
-		clickOn("#Tuesday");
-		clickOn("#tabList");
-		// enroll???
-		
-		clickOn("#tabSfq");
-		TextField t = (TextField)s.lookup("#textfieldSfqUrl");
-		t.setText("http://sfq.ust.hk/results-wrong/eng-f19.html");
-		clickOn("#buttonSfqEnrollCourse");
-		TextArea t2 = (TextArea)s.lookup("#textAreaConsole");
-		sleep(1000);
-		assertEquals(t2.getText(),"The inputted URL is not valid");
-		//assertEquals(t2.getText(),"There are no enrolled course");
-	}
+//	@Test
+//	public void testInvalidEnrolledUrl() {
+//		clickOn("#tabMain");
+//		clickOn("#buttonSearchCourses");
+//		clickOn("#tabFilter");
+//		clickOn("#Tuesday");
+//		clickOn("#tabList");
+//		// enroll???
+//		
+//		clickOn("#tabSfq");
+//		TextField t = (TextField)s.lookup("#textfieldSfqUrl");
+//		t.setText("http://sfq.ust.hk/results-wrong/eng-f19.html");
+//		clickOn("#buttonSfqEnrollCourse");
+//		TextArea t2 = (TextArea)s.lookup("#textAreaConsole");
+//		sleep(1000);
+//		assertEquals(t2.getText(),"The inputted URL is not valid");
+//		//assertEquals(t2.getText(),"There are no enrolled course");
+//	}
 	
 	@Test
 	public void testEnrollCourseSfq() {

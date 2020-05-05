@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 
-public class scapeTest extends ApplicationTest{
+public class ScapeTest extends ApplicationTest{
 	Scraper scraper = new Scraper();
 	private Scene s;
 
