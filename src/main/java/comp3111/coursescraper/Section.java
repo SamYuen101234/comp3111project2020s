@@ -63,10 +63,6 @@ private static final int DEFAULT_MAX_SLOT = 10;
 		return this.sectionID;
 	}
 	
-	public void setNumSlots(int num) {
-		this.numSlots = num;
-	}
-	
 	public int getNumSlots() {
 		return this.numSlots;
 	}

@@ -154,7 +154,7 @@ public class Scraper {
 	
 	/**
 	 * Method to remove invalid sections and slots from the courses.
-	 * Sections with sectionID begins other than 'L', 'T', 'LA' and 'LX' are invalid.
+	 * Sections with sectionID begins other than 'L', 'T', 'LA', 'LX' are invalid.
 	 * Sections with more than 3 slots are invalid.
 	 * Slots with start time earlier than 09:00AM is invalid.
 	 * Slots with end time later than 10:00PM is invalid.
@@ -162,6 +162,7 @@ public class Scraper {
 	 * @return List<Course> with only valid sections and slots
 	 */
 	List<Course> removeInvalid(List<Course> courses) {
+		if(courses == null) return null; 
 		Section s = new Section();
 		Slot t = new Slot();
 		List<Course> result = new ArrayList<Course>();

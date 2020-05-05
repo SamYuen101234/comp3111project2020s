@@ -1,6 +1,7 @@
 package comp3111.coursescraper;
 
 import java.awt.event.ActionEvent;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -9,6 +10,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
@@ -32,6 +34,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.beans.value.ObservableValue;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.cell.CheckBoxTableCell;
@@ -62,6 +65,9 @@ public class Controller {
 	List<String> subjects;
 	List<Course> courses = new Vector<Course>();
 	List<List_row> enrollments = new Vector<>();
+	
+	@FXML
+	private TabPane tabPane;
 
     @FXML
     private Tab tabMain;
@@ -92,6 +98,9 @@ public class Controller {
 
     @FXML
     private Tab tabTimetable;
+    
+    @FXML
+    private Button buttonRefresh;
 
     @FXML
     private Tab tabAllSubject;
@@ -505,7 +514,7 @@ public class Controller {
     						
     						temp.setSelect(newValue);
     						enrollments.add(temp); 
-    						addToTimetable(temp);
+//    						addToTimetable(temp);
     						String result = print();
     						textAreaConsole.clear();
     						textAreaConsole.setText(result);
@@ -517,7 +526,7 @@ public class Controller {
     							String code = enrollments.get(i).getCourse_code();
     							String section = enrollments.get(i).getSection();
     							if(temp_code.contentEquals(code) && temp_sectionid.contentEquals(section)) {
-    								removeFromTimetable(enrollments.get(i));
+//    								removeFromTimetable(enrollments.get(i));
     								enrollments.remove(i);
     							}
     						}
@@ -748,50 +757,48 @@ public class Controller {
     }
     
     @FXML
-    void enterTabTimetable() {
-    	if(tabTimetable.isSelected() == true) {
-    		textAreaConsole.clear();
-    		String text = "Please refer to the following text time table in case the text is overlapped due to time clash:\n";
-    		if(enrollments.size() == 0) {
-    			if(courses.size() > 0) {
-    				int count = 0;
-        			for(Course c: courses) {
-        				text += "\n" + c.getTitle() + "\n";
-        				for(int i = 0; count < 5 && i < c.getNumSections(); ++i, ++count) {
-        					List_row r = new List_row(c, c.getSection(i));
-        					addToTimetable(r);
-        					text += c.getSection(i);
-        				}
-        				if(count >= 5) break;
-        			}
-        		}
+    void refreshTimetable() {
+    	textAreaConsole.clear();
+    	AnchorPane ap = (AnchorPane)tabTimetable.getContent();
+    	List<Node> tempArray = new ArrayList<Node>();
+    	for(Node n: ap.getChildren()) {
+    		if(n.getId() != null && n.getId().substring(0, 9).equals("slotLabel")) {
+    			tempArray.add(n);
     		}
-    		else {
-    			String temp = " ";
-    			for(List_row r: enrollments) {
-    				if(!r.getCourse_code().equals(temp)) {
-    					text += "\n" + r.getCourse_code() + "\n";
-    					temp = r.getCourse_code();
+    	}
+    	for(Node n: tempArray) {
+    		ap.getChildren().remove(n);
+    	}
+    	
+		String text = "Please refer to the following text timetable in case the text is overlapped due to time clash:\n";
+		if(enrollments == null || enrollments.size() == 0) {
+			if(courses != null && courses.size() > 0) {
+				int count = 0;
+    			for(Course c: courses) {
+    				text += "\n" + c.getTitle() + "\n";
+    				for(int i = 0; count < 5 && i < c.getNumSections(); ++i, ++count) {
+    					List_row r = new List_row(c, c.getSection(i));
+    					addToTimetable(r);
+    					text += c.getSection(i);
     				}
-    				text += r;
+    				if(count >= 5) break;
     			}
+    			textAreaConsole.setText(text);
     		}
-    		textAreaConsole.setText(text);
-    	}
-    	else {
-    		if(enrollments.size() == 0) {
-    			if(courses.size() > 0) {
-    				int count = 0;
-        			for(Course c: courses) {
-        				for(int i = 0; count < 5 && i < c.getNumSections(); ++i, ++count) {
-        					List_row r = new List_row(c, c.getSection(i));
-        					removeFromTimetable(r);
-        				}
-        				if(count >= 5) break;
-        			}
-        		}
-    		}
-    	}
+			else textAreaConsole.setText("Please do enrollment or search to before refreshing timetable.");
+		}
+		else {
+			String temp = " ";
+			for(List_row r: enrollments) {
+				if(!r.getCourse_code().equals(temp)) {
+					addToTimetable(r);
+					text += "\n" + r.getCourse_code() + "\n";
+					temp = r.getCourse_code();
+				}
+				text += r;
+			}
+			textAreaConsole.setText(text);
+		}
     }
     
     void addToTimetable(List_row e) {
@@ -808,7 +815,7 @@ public class Controller {
 		for(int i = 0; i < e.getNumSlot(); ++i) {
 			Slot t = e.getSlot(i);
 			Label l = new Label(tempString);
-			l.setId(e.getCourse_code() + e.getSection().split(" ")[0] + i);
+			l.setId("slotLabel" + e.getCourse_code() + e.getSection().split(" ")[0] + i);
 			l.setTextFill(Color.rgb(0, 0, 0, 1));
 			l.setFont(new Font("Times New Roman Bold", 10));
 			l.setBackground(tempBackground);
@@ -834,5 +841,5 @@ public class Controller {
     		ap.getChildren().remove(n);
     	}
     }
-   
+
 }
