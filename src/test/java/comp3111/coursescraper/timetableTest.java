@@ -1,5 +1,7 @@
 package comp3111.coursescraper;
 
+import comp3111.coursescraper.Controller;
+
 import static org.junit.Assert.*;
 
 import org.junit.Test;
@@ -14,6 +16,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 
 public class timetableTest extends ApplicationTest {
 	String baseURL;
@@ -43,12 +48,18 @@ public class timetableTest extends ApplicationTest {
 	}
 
 	@Test
-	public void testAllCoursesSearch() {	
+	public void testDefaultTimetable() {	
+		TabPane tp = (TabPane)s.lookup("#tabPane");
+		Tab tabTimetable = tp.getTabs().get(4);
+		AnchorPane ap = (AnchorPane)tabTimetable.getContent();
 		clickOn("#tabMain");
 		clickOn("#buttonSearchCourses");
-		sleep(5000);
+		clickOn("#tabTimetable");
 		TextArea t = (TextArea)s.lookup("#textAreaConsole");
 		Button b = (Button)s.lookup("#buttonSearchCourses");
-		assertEquals(t.getText(), "");
+		assertEquals(ap.getChildren().size(), 37);
+		clickOn("#tabMain");
+		assertEquals(ap.getChildren().size(), 29);
 	}
+
 }

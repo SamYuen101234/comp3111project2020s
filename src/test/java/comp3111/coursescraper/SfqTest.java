@@ -62,6 +62,8 @@ public class SfqTest extends ApplicationTest{
 	
 	@Test
 	public void testEnrollCourseSfq() {
+		TextField t = (TextField)s.lookup("#textfieldSfqUrl");
+		t.setText("/Users⁩/⁨xieyulong/⁨Desktop/sfq.html");
 		clickOn("#tabMain");
 		clickOn("#buttonSearchCourses");
 		clickOn("#tabSfq");

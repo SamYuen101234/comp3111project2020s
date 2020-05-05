@@ -9,6 +9,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
@@ -62,6 +63,9 @@ public class Controller {
 	List<String> subjects;
 	List<Course> courses = new Vector<Course>();
 	List<List_row> enrollments = new Vector<>();
+	
+	@FXML
+	private TabPane tabPane;
 
     @FXML
     private Tab tabMain;
@@ -736,6 +740,8 @@ public class Controller {
     
     @FXML
     void enterTabTimetable() {
+//    	AnchorPane ap = (AnchorPane)tabTimetable.getContent();
+//    	System.out.println("before: " + ap.getChildren().size());
     	if(tabTimetable.isSelected() == true) {
     		textAreaConsole.clear();
     		String text = "Please refer to the following text time table in case the text is overlapped due to time clash:\n";
@@ -764,6 +770,7 @@ public class Controller {
     			}
     		}
     		textAreaConsole.setText(text);
+//    		System.out.println("after: " + ap.getChildren().size());
     	}
     	else {
     		if(enrollments.size() == 0) {
