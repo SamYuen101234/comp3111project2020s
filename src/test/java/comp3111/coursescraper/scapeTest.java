@@ -18,10 +18,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 
 public class scapeTest extends ApplicationTest{
-
-	String baseURL;
-	String term;
-	String subject;
 	Scraper scraper = new Scraper();
 	private Scene s;
 
