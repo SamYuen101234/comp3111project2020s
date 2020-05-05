@@ -606,10 +606,21 @@ public class Controller {
     		
     		new Thread(){
 				public void run() {
+					Scraper scraper2 = new Scraper();
+					//HashSet<String> sub = new HashSet<String>();
 					List<Course> courseOfSubject = new Vector<Course>();
-					for (int i=0;i<subjects.size();++i) {
-		    			if(!subjects.get(i).equals("MGMT")) {
-		    				courseOfSubject = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),subjects.get(i));
+					for (int i=0;i<subjects.size();++i) {		
+						try {
+		    				Thread.sleep(100); 
+		    			} catch(InterruptedException ex) {
+		    				Thread.currentThread().interrupt();
+		    			}
+						
+		    			courseOfSubject = scraper2.scrape(textfieldURL.getText(), textfieldTerm.getText(),subjects.get(i));
+		    			try {
+		    				Thread.sleep(100); 
+		    			} catch(InterruptedException ex) {
+		    				Thread.currentThread().interrupt();
 		    			}
 		    		
 		    			// Append all courses
@@ -627,21 +638,20 @@ public class Controller {
 		    			} catch(InterruptedException ex) {
 		    				Thread.currentThread().interrupt();
 		    			}
-		    		}
-					// Print total no. of courses in console (size of allCourses list)
-		    		textAreaConsole.setText("Total Number of Courses fetched: " + courses.size() + "\n");    	
-		    	
-		    		// Change "Main" tab text input in "Subject" to "(All Subjects)" and enable the show all courses button
-		    		textfieldSubject.setText("(All Subjects)");
-		    		buttonPrintAllSubjectCourses.setDisable(false);
-
-		    		// Enables the "Find SFQ with my enrolled courses" button
-		    		buttonSfqEnrollCourse.setDisable(false);
+		    			// Print total no. of courses in console (size of allCourses list)
+		    			textAreaConsole.setText("Total Number of Courses fetched: " + courses.size() + "\n"); 						
+		    		}	
 					
 				}
 				
 			}.start();
     	}
+    	// Change "Main" tab text input in "Subject" to "(All Subjects)" and enable the show all courses button
+		textfieldSubject.setText("(All Subjects)");
+		buttonPrintAllSubjectCourses.setDisable(false);
+
+		// Enables the "Find SFQ with my enrolled courses" button
+		buttonSfqEnrollCourse.setDisable(false);
     }
 
     /**
@@ -741,6 +751,9 @@ public class Controller {
     	courses = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),textfieldSubject.getText());
     	courses = scraper.removeInvalid(courses);
     	textAreaConsole.setText(scraper.printCourses(courses, true));
+    	
+    	buttonPrintAllSubjectCourses.setDisable(true);
+		buttonSfqEnrollCourse.setDisable(false);
     }
     
     @FXML

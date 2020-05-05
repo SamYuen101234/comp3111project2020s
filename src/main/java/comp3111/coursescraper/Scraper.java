@@ -307,8 +307,8 @@ public class Scraper {
 
 		try {
 			
-			page = client.getPage(baseurl + "/" + term + "/subject/" + sub);
-			
+			page = client.getPage(baseurl + term + "/subject/" + sub);
+			System.out.println(baseurl + term + "/subject/" + sub);
 		} catch(Exception e) {
 			System.out.println(e);
 			return null;
