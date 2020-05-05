@@ -56,8 +56,8 @@ public class SfqTest extends ApplicationTest{
 		clickOn("#buttonSfqEnrollCourse");
 		TextArea t2 = (TextArea)s.lookup("#textAreaConsole");
 		sleep(1000);
-		assertEquals(t2.getText(),"The inputted URL is not valid");
-		//assertEquals(t2.getText(),"There are no enrolled course");
+		//assertEquals(t2.getText(),"The inputted URL is not valid");
+		assertEquals(t2.getText(),"There are no enrolled course");
 	}
 	
 	@Test
