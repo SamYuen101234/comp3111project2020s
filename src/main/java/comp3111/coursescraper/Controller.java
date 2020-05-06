@@ -627,10 +627,8 @@ public class Controller {
 		    		buttonPrintAllSubjectCourses.setDisable(false);
 
 		    		// Enables the "Find SFQ with my enrolled courses" button
-		    		buttonSfqEnrollCourse.setDisable(false);
-					
+		    		buttonSfqEnrollCourse.setDisable(false);	
 				}
-				
 			}.start();
     	}
     }
@@ -732,6 +730,7 @@ public class Controller {
     	courses = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),textfieldSubject.getText());
     	courses = scraper.removeInvalid(courses);
     	textAreaConsole.setText(scraper.printCourses(courses, true));
+    	List_View(courses);
     }
     
     @FXML
