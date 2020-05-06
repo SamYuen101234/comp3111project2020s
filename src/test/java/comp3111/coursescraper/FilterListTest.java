@@ -151,7 +151,7 @@ public class FilterListTest extends ApplicationTest {
 	}
 	@Test
 	public void testComparator() {
-		Comparator<List_row> a;
+		Comparator<List_row> b;
 		Controller.List_rowComparator temp = controller.new List_rowComparator();
 		temp.compare(section1, section2);
 	}
