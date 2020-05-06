@@ -119,16 +119,13 @@ public class Scraper {
     		String result = "";
     		int noOfSection = 0;
 	    	for (Course c : courses) {
-	    		//System.out.println(c.getTitle());
 	    		noOfSection += c.getNumSections();
 	    		String SID = "";
 	    		result += c.getTitle() + "\n";
 	    		for (int i = 0; i < c.getNumSections(); i++) {
-	    			//System.out.println(c.getSection(i).getSectionID());
 	    			Section s = c.getSection(i);
 	    			result += s;
 	    			allInstructor.addAll(s.getSectionInstructor());
-	    			//System.out.println(c.getSection(i).getAllInstructor().size());
 	    			unavailableInstructor.addAll(s.getInstructorConstraint(time));
 	    		}
 	    		result += "\n";
@@ -159,7 +156,7 @@ public class Scraper {
 	 * Slots with start time earlier than 09:00AM is invalid.
 	 * Slots with end time later than 10:00PM is invalid.
 	 * @param courses The courses with invalid sections or slots to be removed
-	 * @return List<Course> with only valid sections and slots
+	 * @return List of courses with only valid sections and slots
 	 */
 	List<Course> removeInvalid(List<Course> courses) {
 		if(courses == null) return null; 
@@ -266,7 +263,6 @@ public class Scraper {
 				s.addSlot(t);
 			}
 		}
-		//System.out.println(c.getTitle() + " " + s.getSectionID() + " has " + s.getAllInstructor().size());
 		s.addInstructor(s.getAllInstructor());
 		c.addSection(s);
 	}
@@ -307,7 +303,7 @@ public class Scraper {
 	 * @param baseurl The baseurl of the website
 	 * @param term The term of the course
 	 * @param sub The subject of the course
-	 * @return List Course of all courses from the baseurl, term and subject
+	 * @return List of all courses from the baseurl, term and subject
 	 */
 	public List<Course> scrape(String baseurl, String term, String sub) {
 		

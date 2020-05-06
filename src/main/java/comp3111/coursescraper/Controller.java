@@ -414,11 +414,13 @@ public class Controller {
     		checkboxfilter();
     }
     
+
     /** a class inherited the comparator for compare the list_row
      * 
      * @author SamYuen
      *
      */
+
     public class List_rowComparator implements Comparator<List_row> {
     	/**
     	 * @param list_row first list_row
@@ -543,7 +545,6 @@ public class Controller {
     						
     						temp.setSelect(newValue);
     						enrollments.add(temp); 
-//    						addToTimetable(temp);
     						String result = print();
     						textAreaConsole.clear();
     						textAreaConsole.setText(result);
@@ -555,7 +556,6 @@ public class Controller {
     							String code = enrollments.get(i).getCourse_code();
     							String section = enrollments.get(i).getSection();
     							if(temp_code.contentEquals(code) && temp_sectionid.contentEquals(section)) {
-//    								removeFromTimetable(enrollments.get(i));
     								enrollments.remove(i);
     							}
     						}
@@ -784,6 +784,10 @@ public class Controller {
       List_View(courses);
     }
     
+    /**
+     * Method to refresh and show the new timetable.
+     * This method will be invoked when refresh button in the timetable tab is clicked.
+     */
     @FXML
     void refreshTimetable() {
     	textAreaConsole.clear();
@@ -816,12 +820,16 @@ public class Controller {
 			else textAreaConsole.setText("Please do enrollment or search to before refreshing timetable.");
 		}
 		else {
-			String temp = " ";
+			String tempC = " ";
+			String tempS = " ";
 			for(List_row r: enrollments) {
-				if(!(r.getCourse_code() + r.getSection()).equals(temp)) {
-					addToTimetable(r);
+				if(!r.getCourse_code().equals(tempC)) {
 					text += "\n" + r.getCourse_code() + "\n";
-					temp = r.getCourse_code() + r.getSection();
+					tempC = r.getCourse_code();
+				}
+				if(!r.getSection().equals(tempS) || !r.getCourse_code().equals(tempC)) {
+					addToTimetable(r);
+					tempS = r.getSection();
 				}
 				text += r;
 			}
@@ -829,6 +837,10 @@ public class Controller {
 		}
     }
     
+    /**
+     * Method to add a section to the timetable.
+     * This method will be invoked by freshTimetable() function.
+     */
     void addToTimetable(List_row e) {
     	AnchorPane ap = (AnchorPane)tabTimetable.getContent();
     	Random r = new Random();
@@ -857,6 +869,10 @@ public class Controller {
 		}
     }
     
+    /**
+     * Method to delete a section to the timetable.
+     * This method will be invoked by freshTimetable() function.
+     */
     void removeFromTimetable(List_row e) {
     	AnchorPane ap = (AnchorPane)tabTimetable.getContent();
     	List<Node> temp = new ArrayList<Node>();
@@ -869,5 +885,4 @@ public class Controller {
     		ap.getChildren().remove(n);
     	}
     }
-
 }
