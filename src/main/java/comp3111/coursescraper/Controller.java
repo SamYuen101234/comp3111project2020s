@@ -790,10 +790,10 @@ public class Controller {
 		else {
 			String temp = " ";
 			for(List_row r: enrollments) {
-				if(!r.getCourse_code().equals(temp)) {
+				if(!(r.getCourse_code() + r.getSection()).equals(temp)) {
 					addToTimetable(r);
 					text += "\n" + r.getCourse_code() + "\n";
-					temp = r.getCourse_code();
+					temp = r.getCourse_code() + r.getSection();
 				}
 				text += r;
 			}

@@ -18,11 +18,13 @@ private static final int DEFAULT_MAX_SLOT = 10;
 	private String sectionID;
 	private Slot [] slots;
 	private int numSlots;
+	private Set<String> instructor;
 	
 	public Section() {
 		slots = new Slot[DEFAULT_MAX_SLOT];
 		for (int i = 0; i < DEFAULT_MAX_SLOT; i++) slots[i] = null;
 		numSlots = 0;
+		instructor = new HashSet<String>();
 	}
 	
 	public String toString() {
@@ -52,6 +54,7 @@ private static final int DEFAULT_MAX_SLOT = 10;
 		s.sectionID = this.sectionID;
 		s.slots = this.slots;
 		s.numSlots = this.numSlots;
+		s.instructor = this.instructor;
 		return s;
 	}
 	
@@ -88,6 +91,14 @@ private static final int DEFAULT_MAX_SLOT = 10;
 	public void removeSlot(int i) {
 		--this.numSlots;
 		this.slots = ArrayUtils.remove(this.slots, i);
+	}
+	
+	public void addInstructor(Set<String> i) {
+		this.instructor.addAll(i);
+	}
+	
+	public Set<String> getSectionInstructor() {
+		return this.instructor;
 	}
 	
 }
