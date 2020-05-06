@@ -638,12 +638,11 @@ public class Controller {
 		    			} catch(InterruptedException ex) {
 		    				Thread.currentThread().interrupt();
 		    			}
+
 		    			// Print total no. of courses in console (size of allCourses list)
 		    			textAreaConsole.setText("Total Number of Courses fetched: " + courses.size() + "\n"); 						
 		    		}	
-					
 				}
-				
 			}.start();
     	}
     	// Change "Main" tab text input in "Subject" to "(All Subjects)" and enable the show all courses button
@@ -751,9 +750,9 @@ public class Controller {
     	courses = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),textfieldSubject.getText());
     	courses = scraper.removeInvalid(courses);
     	textAreaConsole.setText(scraper.printCourses(courses, true));
-    	
     	buttonPrintAllSubjectCourses.setDisable(true);
 		buttonSfqEnrollCourse.setDisable(false);
+      List_View(courses);
     }
     
     @FXML
