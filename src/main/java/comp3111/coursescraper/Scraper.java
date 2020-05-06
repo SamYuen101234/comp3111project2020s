@@ -127,7 +127,7 @@ public class Scraper {
 	    			//System.out.println(c.getSection(i).getSectionID());
 	    			Section s = c.getSection(i);
 	    			result += s;
-	    			allInstructor.addAll(s.getAllInstructor());
+	    			allInstructor.addAll(s.getSectionInstructor());
 	    			//System.out.println(c.getSection(i).getAllInstructor().size());
 	    			unavailableInstructor.addAll(s.getInstructorConstraint(time));
 	    		}
@@ -239,7 +239,7 @@ public class Scraper {
 			s = c.getSection(c.getNumSections()-1);
 			c.removeSection(c.getNumSections()-1);
 		}
-		
+
 		//Add to course list
 		if(times[0].equals("TBA")) {
 			Slot t = new Slot();
@@ -266,6 +266,8 @@ public class Scraper {
 				s.addSlot(t);
 			}
 		}
+		//System.out.println(c.getTitle() + " " + s.getSectionID() + " has " + s.getAllInstructor().size());
+		s.addInstructor(s.getAllInstructor());
 		c.addSection(s);
 	}
 	
