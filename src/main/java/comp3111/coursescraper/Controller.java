@@ -419,7 +419,7 @@ public class Controller {
      * @author SamYuen
      *
      */
-    public class List_rowComparator implements Comparator<List_row> {
+    class List_rowComparator implements Comparator<List_row> {
     	/**
     	 * @param list_row first list_row
     	 * @param list_row second list_row
