@@ -55,7 +55,7 @@ public class SearchAllTest extends ApplicationTest {
 		assertEquals(t.getText(),"Total Number of Categories/Code Prefix: 75");
 	}
 
-	@Test
+	/*@Test
 	public void testAllCoursesSearch() {
 		// Test number of courses correct		
 		clickOn("#tabAllSubject");
@@ -77,7 +77,7 @@ public class SearchAllTest extends ApplicationTest {
 		Button bu = (Button)s.lookup("#buttonSfqEnrollCourse");
 		sleep(1000);
 		assertFalse(bu.isDisabled());
-	}
+	}*/
 	
 	@Test
 	public void testInvalidSubjectUrl() {
