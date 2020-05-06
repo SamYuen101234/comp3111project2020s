@@ -124,8 +124,8 @@ public class FilterListTest extends ApplicationTest {
 	
 	@Test
 	public void testListTable() {
-		clickOn("#tabAllSubject");
-		clickOn("#allCoursesSearch");
+		clickOn("#tabMain");
+		clickOn("#buttonSearchCourses");
 		sleep(1000);
 		clickOn("#tabFilter");
 		clickOn("#Monday");
