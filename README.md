@@ -12,13 +12,13 @@
 
 ### 2. XIE, Yulong
 ---
-> email: yxiear | github: alanxy | dev branch: task1
+> email: yxiear | github: alanxy | dev branch: task1, revert-8-task1, task1_new
 
 > Task 1 & Task 4
 
 ### 3. LAM, Tsz Chun
 ---
-> email: tclamai | github: VincentLam386 | dev branch: vinc_feature0
+> email: tclamai | github: VincentLam386 | dev branch: vinc_feature0, revert-6-feature0, Vinca
 
 > Task 5 & Task 6
 

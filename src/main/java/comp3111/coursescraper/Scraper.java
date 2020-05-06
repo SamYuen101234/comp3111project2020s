@@ -154,7 +154,7 @@ public class Scraper {
 	
 	/**
 	 * Method to remove invalid sections and slots from the courses.
-	 * Sections with sectionID begins other than 'L', 'T', 'LA' and 'LX' are invalid.
+	 * Sections with sectionID begins other than 'L', 'T', 'LA', 'LX' are invalid.
 	 * Sections with more than 3 slots are invalid.
 	 * Slots with start time earlier than 09:00AM is invalid.
 	 * Slots with end time later than 10:00PM is invalid.
@@ -162,6 +162,7 @@ public class Scraper {
 	 * @return List<Course> with only valid sections and slots
 	 */
 	List<Course> removeInvalid(List<Course> courses) {
+		if(courses == null) return null; 
 		Section s = new Section();
 		Slot t = new Slot();
 		List<Course> result = new ArrayList<Course>();
@@ -268,6 +269,12 @@ public class Scraper {
 		c.addSection(s);
 	}
 	
+	/**
+	 * Method to scrape all subjects from the required URL
+	 * @param baseurl The baseurl of the website
+	 * @param term The term of the course
+	 * @return list of all subjects from the baseurl and term
+	 */
 	public List<String> scrapeSubject(String baseurl, String term){
 		HtmlPage mainPage;
 		try {
@@ -298,7 +305,7 @@ public class Scraper {
 	 * @param baseurl The baseurl of the website
 	 * @param term The term of the course
 	 * @param sub The subject of the course
-	 * @return List<Course> of all courses from the baseurl, term and subject
+	 * @return List Course of all courses from the baseurl, term and subject
 	 */
 	public List<Course> scrape(String baseurl, String term, String sub) {
 		
@@ -306,8 +313,7 @@ public class Scraper {
 
 		try {
 			
-			page = client.getPage(baseurl + "/" + term + "/subject/" + sub);
-			
+			page = client.getPage(baseurl + term + "/subject/" + sub);
 		} catch(Exception e) {
 			System.out.println(e);
 			return null;
@@ -350,6 +356,11 @@ public class Scraper {
 		return result;
 	}
 	
+	/**
+	 * Method to scrape all subjects appeared in SFQ URL
+	 * @param subjectTable The baseurl of the website
+	 * @return a list of subjects as String appeared in the SFQ url
+	 */
 	private List<String> getSFQSubject(HtmlElement subjectTable){
 		List<?> link = (List<?>) subjectTable.getByXPath(".//a");
 		Vector<String> subjects = new Vector<String>();
@@ -364,6 +375,11 @@ public class Scraper {
 		return subjects;
 	}
 	
+	/**
+	 * Method to get next table from the current HtmlElement
+	 * @param curr The current HtmlElement
+	 * @return the next HtmlElement contatining the next table
+	 */
 	private HtmlElement getNextTable(HtmlElement curr) {
 		HtmlElement target = (HtmlElement) curr.getNextElementSibling();
 		while(!target.getClass().getName().equals("com.gargoylesoftware.htmlunit.html.HtmlTable")) {
@@ -373,6 +389,11 @@ public class Scraper {
 		return target;
 	}
 	
+	/**
+	 * Method to scrape all tables corresponding to all subjects appeared in SFQ URL
+	 * @param baseurl The baseurl of the SFQ website
+	 * @return a list of HtmlElement containing all tables corresponding to all subjects
+	 */
 	private List<HtmlElement> getAllSubjectsSFQTable(String baseurl){
 		try {
 			HtmlPage page = client.getPage(baseurl);
@@ -400,6 +421,12 @@ public class Scraper {
 		}		
 	}
 	
+	/**
+	 * Method to scrape the SFQ ratings of all enrolled courses appeared in SFQ URL
+	 * @param baseurl The baseurl of the SFQ website
+	 * @param enrolled The hashset of enrolled course code in the form of "XXXX####"
+	 * @return a hashmap with key of enrolled course code and value as the average SFQ rating of the corresponding course 
+	 */
 	public HashMap<String,Float> scrapeCoursesSFQ(String baseurl, HashSet<String> enrolled) {
 		List<HtmlElement> allSubjects = getAllSubjectsSFQTable(baseurl);
 		if(allSubjects==null)
@@ -478,7 +505,11 @@ public class Scraper {
 		return input;
 	}
 	
-	
+	/**
+	 * Method to scrape the SFQ ratings of all instructors appeared in SFQ URL
+	 * @param baseurl The baseurl of the SFQ website
+	 * @return a hashmap with key of instructors' name and value as the average SFQ rating of the corresponding course 
+	 */
 	public HashMap<String,Vector<Float>> scrapeInstructorSFQ(String baseurl){
 		List<HtmlElement> allSubjects = getAllSubjectsSFQTable(baseurl);
 		

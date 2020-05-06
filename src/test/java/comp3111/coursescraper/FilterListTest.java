@@ -20,7 +20,20 @@ public class FilterListTest extends ApplicationTest {
 	private List_row section1 = new List_row();
 	private List_row section2 = new List_row();
 	private List_row section3 = new List_row();
-	private Controller controller = new Controller();
+	private Controller controller;
+	
+	@Override
+	public void start(Stage stage) throws Exception {
+    	FXMLLoader loader = new FXMLLoader();
+    	loader.setLocation(getClass().getResource("/ui.fxml"));
+   		VBox root = (VBox) loader.load();
+   		Scene scene =  new Scene(root);
+   		stage.setScene(scene);
+   		stage.setTitle("Course Scraper");
+   		stage.show();
+   		s = scene;
+   		controller = loader.getController();
+	}
 	
 	@Before
 	public void setUp() throws Exception{
@@ -41,20 +54,6 @@ public class FilterListTest extends ApplicationTest {
 		controller.enrollments.add(section3);
 	}
 
-	
-	@Override
-	public void start(Stage stage) throws Exception {
-    	FXMLLoader loader = new FXMLLoader();
-    	loader.setLocation(getClass().getResource("/ui.fxml"));
-   		VBox root = (VBox) loader.load();
-   		Scene scene =  new Scene(root);
-   		stage.setScene(scene);
-   		stage.setTitle("Course Scraper");
-   		stage.show();
-   		s = scene;
-	}
-
-	
 	@Test
 	public void testSelectAllButton() {
 		clickOn("#tabFilter");
@@ -125,8 +124,8 @@ public class FilterListTest extends ApplicationTest {
 	
 	@Test
 	public void testListTable() {
-		clickOn("#tabAllSubject");
-		clickOn("#allCoursesSearch");
+		clickOn("#tabMain");
+		clickOn("#buttonSearchCourses");
 		sleep(1000);
 		clickOn("#tabFilter");
 		clickOn("#Monday");
