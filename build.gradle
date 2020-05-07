@@ -49,6 +49,19 @@ jacocoTestReport {
 	}
 }
 
+configurations {
+    doc {
+        transitive false
+    }
+}
+
+javadoc {
+    options.charSet = 'UTF-8'
+    source configurations.doc.collect { zipTree(it) }
+    options.memberLevel = JavadocMemberLevel.PACKAGE
+    include '**/*.java'
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
 
 jar {
     baseName = 'courseScraper'

@@ -60,6 +60,11 @@ import java.util.HashSet;
 import javafx.util.Callback;
 import java.lang.Object;
 
+/** A class to control most of the action on the software 
+ * 
+ * @author Yuen Zhikun (zyuen),
+ * @version 1.0
+ */
 
 public class Controller {
 	List<String> subjects;
@@ -180,7 +185,7 @@ public class Controller {
     @FXML
     private TableView<List_row> List_table = new TableView<>();
     
-    public static ObservableList<List_row> toObservableList = FXCollections.observableArrayList();
+    private ObservableList<List_row> toObservableList = FXCollections.observableArrayList();
     
     
     @FXML
@@ -198,7 +203,11 @@ public class Controller {
     @FXML
     private TableColumn<List_row, Boolean> enroll = new TableColumn<>("Enroll");
     
-    Vector<CheckBox> getAllCheckBox(){
+    /** get all checkboxes
+     * 
+     * @retur a vector which contains all checkboxes
+     */
+    public Vector<CheckBox> getAllCheckBox(){
     	Vector<CheckBox> CheckBoxes = new Vector<CheckBox>();
     	CheckBoxes.add(AM);
     	CheckBoxes.add(PM);
@@ -213,11 +222,11 @@ public class Controller {
     	CheckBoxes.add(With_Labs_Tutorial);
     	return CheckBoxes;
     }
-    
-    
-    
+    /** filter the courses through checkboxes
+     * 
+     */
     @FXML
-    void checkboxfilter(){
+    public void checkboxfilter(){
     	textAreaConsole.clear();
     	Vector<CheckBox> CheckBoxes = getAllCheckBox();
     	Vector<CheckBox> Checked = new Vector<CheckBox>();
@@ -361,10 +370,12 @@ public class Controller {
     	List_View(Filtered);
     	
     }
-    
+    /** when select all button press, check all boxes.
+     *  when de-select all button press, unclick all boxes
+     */
     
     @FXML
-    void PressSelectAll() {
+    public void PressSelectAll() {
     	Vector<CheckBox> CheckBoxes = getAllCheckBox();
     	Vector<CheckBox> Checked = new Vector<CheckBox>();
     	for(int i =0; i < CheckBoxes.size(); ++i) {
@@ -402,15 +413,31 @@ public class Controller {
     		}
     		checkboxfilter();
     }
+    
+
+    /** a class inherited the comparator for compare the list_row
+     * 
+     * @author SamYuen
+     *
+     */
+
     public class List_rowComparator implements Comparator<List_row> {
+    	/**
+    	 * @param list_row first list_row
+    	 * @param list_row second list_row
+    	 * @return int of the compare result
+    	 */
         @Override
         public int compare(List_row o1, List_row o2) {
             return o1.getCourse_code().compareTo(o2.getCourse_code());
         }
     }
-    
+    /** return the enrolled section from the list called enrollment
+     * 
+     * @return return string of the enrolled section
+     */
  
-    String print() {
+    public String print() {
     	String result = "";
     	Collections.sort(enrollments, new List_rowComparator());
     	for(int i = 0; i < enrollments.size(); ++i) {
@@ -440,10 +467,14 @@ public class Controller {
     	//System.out.println(result);
     	//System.out.println("");
     	return result;
-    }    
-    //Task 3 List
+    }        
+    
+    /** create a tableview in list tab
+     * 
+     * @param a list which holds Course
+     */
     @SuppressWarnings("unchecked")
-    void List_View(List<Course> filtered) {
+    public void List_View(List<Course> filtered) {
     	List_table.getItems().clear();
     	List_table.setEditable(true);
     	List<List_row> list_rows = new Vector<>();
@@ -514,7 +545,6 @@ public class Controller {
     						
     						temp.setSelect(newValue);
     						enrollments.add(temp); 
-//    						addToTimetable(temp);
     						String result = print();
     						textAreaConsole.clear();
     						textAreaConsole.setText(result);
@@ -526,7 +556,6 @@ public class Controller {
     							String code = enrollments.get(i).getCourse_code();
     							String section = enrollments.get(i).getSection();
     							if(temp_code.contentEquals(code) && temp_sectionid.contentEquals(section)) {
-//    								removeFromTimetable(enrollments.get(i));
     								enrollments.remove(i);
     							}
     						}
@@ -638,12 +667,11 @@ public class Controller {
 		    			} catch(InterruptedException ex) {
 		    				Thread.currentThread().interrupt();
 		    			}
+
 		    			// Print total no. of courses in console (size of allCourses list)
 		    			textAreaConsole.setText("Total Number of Courses fetched: " + courses.size() + "\n"); 						
 		    		}	
-					
 				}
-				
 			}.start();
     	}
     	// Change "Main" tab text input in "Subject" to "(All Subjects)" and enable the show all courses button
@@ -751,11 +779,18 @@ public class Controller {
     	courses = scraper.scrape(textfieldURL.getText(), textfieldTerm.getText(),textfieldSubject.getText());
     	courses = scraper.removeInvalid(courses);
     	textAreaConsole.setText(scraper.printCourses(courses, true));
-    	
     	buttonPrintAllSubjectCourses.setDisable(true);
 		buttonSfqEnrollCourse.setDisable(false);
+      List_View(courses);
     }
     
+    /**
+     * Method to refresh and show the new timetable.
+     * The previous timetable will be cleaned up and the new timetable will be created according
+     * to the enrollments list or courses list if the enrollments list is empty.
+     * Corresponding labels will be added to the timetable.
+     * This method will be invoked when refresh button in the timetable tab is clicked.
+     */
     @FXML
     void refreshTimetable() {
     	textAreaConsole.clear();
@@ -788,12 +823,16 @@ public class Controller {
 			else textAreaConsole.setText("Please do enrollment or search to before refreshing timetable.");
 		}
 		else {
-			String temp = " ";
+			String tempC = " ";
+			String tempS = " ";
 			for(List_row r: enrollments) {
-				if(!r.getCourse_code().equals(temp)) {
-					addToTimetable(r);
+				if(!r.getCourse_code().equals(tempC)) {
 					text += "\n" + r.getCourse_code() + "\n";
-					temp = r.getCourse_code();
+					tempC = r.getCourse_code();
+				}
+				if(!r.getSection().equals(tempS) || !r.getCourse_code().equals(tempC)) {
+					addToTimetable(r);
+					tempS = r.getSection();
 				}
 				text += r;
 			}
@@ -801,6 +840,11 @@ public class Controller {
 		}
     }
     
+    /**
+     * Method to add a section to the timetable.
+     * This method will be invoked by freshTimetable() function.
+     * @param e List_row to add
+     */
     void addToTimetable(List_row e) {
     	AnchorPane ap = (AnchorPane)tabTimetable.getContent();
     	Random r = new Random();
@@ -829,6 +873,11 @@ public class Controller {
 		}
     }
     
+    /**
+     * Method to delete a section to the timetable.
+     * This method will be invoked by freshTimetable() function.
+     * @param e List_row to be removed
+     */
     void removeFromTimetable(List_row e) {
     	AnchorPane ap = (AnchorPane)tabTimetable.getContent();
     	List<Node> temp = new ArrayList<Node>();
@@ -841,5 +890,4 @@ public class Controller {
     		ap.getChildren().remove(n);
     	}
     }
-
 }
