@@ -60,6 +60,11 @@ import java.util.HashSet;
 import javafx.util.Callback;
 import java.lang.Object;
 
+/** A class to control most of the action on the software 
+ * 
+ * @author Yuen Zhikun (zyuen),
+ * @version 1.0
+ */
 
 public class Controller {
 	List<String> subjects;
@@ -180,7 +185,7 @@ public class Controller {
     @FXML
     private TableView<List_row> List_table = new TableView<>();
     
-    public static ObservableList<List_row> toObservableList = FXCollections.observableArrayList();
+    private ObservableList<List_row> toObservableList = FXCollections.observableArrayList();
     
     
     @FXML
@@ -198,7 +203,11 @@ public class Controller {
     @FXML
     private TableColumn<List_row, Boolean> enroll = new TableColumn<>("Enroll");
     
-    Vector<CheckBox> getAllCheckBox(){
+    /** get all checkboxes
+     * 
+     * @retur a vector which contains all checkboxes
+     */
+    public Vector<CheckBox> getAllCheckBox(){
     	Vector<CheckBox> CheckBoxes = new Vector<CheckBox>();
     	CheckBoxes.add(AM);
     	CheckBoxes.add(PM);
@@ -213,11 +222,11 @@ public class Controller {
     	CheckBoxes.add(With_Labs_Tutorial);
     	return CheckBoxes;
     }
-    
-    
-    
+    /** filter the courses through checkboxes
+     * 
+     */
     @FXML
-    void checkboxfilter(){
+    public void checkboxfilter(){
     	textAreaConsole.clear();
     	Vector<CheckBox> CheckBoxes = getAllCheckBox();
     	Vector<CheckBox> Checked = new Vector<CheckBox>();
@@ -361,10 +370,12 @@ public class Controller {
     	List_View(Filtered);
     	
     }
-    
+    /** when select all button press, check all boxes.
+     *  when de-select all button press, unclick all boxes
+     */
     
     @FXML
-    void PressSelectAll() {
+    public void PressSelectAll() {
     	Vector<CheckBox> CheckBoxes = getAllCheckBox();
     	Vector<CheckBox> Checked = new Vector<CheckBox>();
     	for(int i =0; i < CheckBoxes.size(); ++i) {
@@ -403,15 +414,30 @@ public class Controller {
     		checkboxfilter();
     }
     
+
+    /** a class inherited the comparator for compare the list_row
+     * 
+     * @author SamYuen
+     *
+     */
+
     public class List_rowComparator implements Comparator<List_row> {
+    	/**
+    	 * @param list_row first list_row
+    	 * @param list_row second list_row
+    	 * @return int of the compare result
+    	 */
         @Override
         public int compare(List_row o1, List_row o2) {
             return o1.getCourse_code().compareTo(o2.getCourse_code());
         }
     }
-    
+    /** return the enrolled section from the list called enrollment
+     * 
+     * @return return string of the enrolled section
+     */
  
-    String print() {
+    public String print() {
     	String result = "";
     	Collections.sort(enrollments, new List_rowComparator());
     	for(int i = 0; i < enrollments.size(); ++i) {
@@ -441,10 +467,14 @@ public class Controller {
     	//System.out.println(result);
     	//System.out.println("");
     	return result;
-    }    
-    //Task 3 List
+    }        
+    
+    /** create a tableview in list tab
+     * 
+     * @param a list which holds Course
+     */
     @SuppressWarnings("unchecked")
-    void List_View(List<Course> filtered) {
+    public void List_View(List<Course> filtered) {
     	List_table.getItems().clear();
     	List_table.setEditable(true);
     	List<List_row> list_rows = new Vector<>();
