@@ -62,7 +62,7 @@ import java.lang.Object;
 
 /** A class to control most of the action on the software 
  * 
- * @author Yuen Zhikun (zyuen),
+ * @author Yuen Zhikun (zyuen), Lam Tsz Chun (tclamai)
  * @version 1.0
  */
 

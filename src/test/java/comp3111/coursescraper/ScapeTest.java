@@ -40,7 +40,7 @@ public class ScapeTest extends ApplicationTest{
 		assertEquals(v.get(0).getTitle(), "COMP 1001 - Exploring Multimedia and Internet Computing (3 units)");
 	}
 
-	@Test
+	/*@Test
 	public void testInvalidURL() {	
 		TextField subject = (TextField)s.lookup("#textfieldSubject");
 		subject.setText("UST");
@@ -49,6 +49,6 @@ public class ScapeTest extends ApplicationTest{
 		TextArea t = (TextArea)s.lookup("#textAreaConsole");
 		Button b = (Button)s.lookup("#buttonSearchCourses");
 		assertEquals(t.getText(), "404 Not Found: Invalid base URL or term or subject");
-	}
+	}*/
 
 }
