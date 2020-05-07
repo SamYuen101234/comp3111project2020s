@@ -756,6 +756,9 @@ public class Controller {
     
     /**
      * Method to refresh and show the new timetable.
+     * The previous timetable will be cleaned up and the new timetable will be created according
+     * to the enrollments list or courses list if the enrollments list is empty.
+     * Corresponding labels will be added to the timetable.
      * This method will be invoked when refresh button in the timetable tab is clicked.
      */
     @FXML
@@ -810,6 +813,7 @@ public class Controller {
     /**
      * Method to add a section to the timetable.
      * This method will be invoked by freshTimetable() function.
+     * @param e List_row to add
      */
     void addToTimetable(List_row e) {
     	AnchorPane ap = (AnchorPane)tabTimetable.getContent();
@@ -842,6 +846,7 @@ public class Controller {
     /**
      * Method to delete a section to the timetable.
      * This method will be invoked by freshTimetable() function.
+     * @param e List_row to be removed
      */
     void removeFromTimetable(List_row e) {
     	AnchorPane ap = (AnchorPane)tabTimetable.getContent();
