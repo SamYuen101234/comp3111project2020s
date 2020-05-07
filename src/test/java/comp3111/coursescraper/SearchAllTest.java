@@ -80,6 +80,22 @@ public class SearchAllTest extends ApplicationTest {
 	}*/
 	
 	@Test
+	public void testPrintAll() {
+		clickOn("#tabMain");
+		clickOn("#buttonSearchCourses");
+		Button bu = (Button)s.lookup("#buttonPrintAllSubjectCourses");
+		sleep(1000);
+		bu.setDisable(false);
+		clickOn("#buttonPrintAllSubjectCourses");
+		sleep(1000);
+		TextArea t = (TextArea)s.lookup("#textAreaConsole");
+		System.out.println(t.getText());
+		Boolean t1 = t.getText().length() > 2000;
+		assertTrue(t1);
+		
+	}
+	
+	@Test
 	public void testInvalidSubjectUrl() {
 		clickOn("#tabMain");
 		TextField t = (TextField)s.lookup("#textfieldURL");
