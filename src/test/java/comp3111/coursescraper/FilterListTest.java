@@ -14,6 +14,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.util.Comparator;
 import java.util.List;
 public class FilterListTest extends ApplicationTest {
 	private Scene s;
@@ -146,6 +148,12 @@ public class FilterListTest extends ApplicationTest {
 	public void testSelfPrint() {
 		String enrolledResult = controller.print();
 		System.out.println(enrolledResult);
+	}
+	@Test
+	public void testComparator() {
+		Comparator<List_row> b;
+		Controller.List_rowComparator temp = controller.new List_rowComparator();
+		temp.compare(section1, section2);
 	}
 	
 
