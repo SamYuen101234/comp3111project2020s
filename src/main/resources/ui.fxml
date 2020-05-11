@@ -160,7 +160,7 @@
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
                               <Label layoutX="82.0" layoutY="31.0" text="SFQ URL" />
-                              <TextField fx:id="textfieldSfqUrl" layoutX="147.0" layoutY="27.0" prefHeight="25.0" prefWidth="403.0" text="file:///Users/SamYuen/Desktop/temp.html" />
+                              <TextField fx:id="textfieldSfqUrl" layoutX="147.0" layoutY="27.0" prefHeight="25.0" prefWidth="403.0" text="file:///C:/Users/vinca/Desktop/School%20Summary%20Report.html" />
                               <Button fx:id="buttonSfqEnrollCourse" disable="true" layoutX="147.0" layoutY="64.0" mnemonicParsing="false" onAction="#findSfqEnrollCourse" text="Find SFQ with my enrolled courses" />
                               <Button fx:id="buttonInstructorSfq" layoutX="384.0" layoutY="64.0" mnemonicParsing="false" onAction="#findInstructorSfq" text="List instructors' average SFQ" />
                               <Label layoutX="42.0" layoutY="132.0" text="You may assume no login is required when you scrape the SFQ page" />
