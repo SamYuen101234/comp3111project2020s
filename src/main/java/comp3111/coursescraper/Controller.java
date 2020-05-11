@@ -363,12 +363,14 @@ public class Controller {
     	{
     		String filter_console = scraper.printCourses(Filtered, false);
     		textAreaConsole.setText(filter_console);
+    		List_View(Filtered);
+
     	}else {
     		String search_console = scraper.printCourses(courses, false);
     		textAreaConsole.setText(search_console);
+    		List_View(courses);
     	}
-    	List_View(Filtered);
-    	
+    	    	
     }
     /** when select all button press, check all boxes.
      *  when de-select all button press, unclick all boxes
@@ -421,7 +423,9 @@ public class Controller {
      *
      */
 
+
     public class List_rowComparator implements Comparator<List_row> {
+
     	/**
     	 * @param list_row first list_row
     	 * @param list_row second list_row
@@ -521,24 +525,6 @@ public class Controller {
     								&&  !sectionid_temp.contentEquals(sectionid)) {
     							return;
     						}
-    						/*if(newValue == false) {
-    							continue;
-    						}
-    						else {
-	    						for(int j = 0; j < temp.getNumSlot(); ++j){
-	    							LocalTime start_temp = temp.getSlot(j).getStart();
-	    							LocalTime end_temp = temp.getSlot(j).getEnd();
-		    						for(int k = 0; k < enrollments.get(i).getNumSlot(); ++k) {
-		    							LocalTime start = enrollments.get(i).getSlot(k).getStart();
-		    							LocalTime end = enrollments.get(i).getSlot(k).getEnd();
-		    							if((start_temp.isBefore(start) && end_temp.isBefore(end)) || 
-		    									(start_temp.isAfter(start) && end_temp.isAfter(end))) {
-		    								continue;
-		    							}
-		    							return;
-		    						}
-	    						}
-    						}*/
     					}
     					
     					if(oldValue == false && newValue == true) {

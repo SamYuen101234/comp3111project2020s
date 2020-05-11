@@ -14,6 +14,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.util.Comparator;
 import java.util.List;
 public class FilterListTest extends ApplicationTest {
 	private Scene s;
@@ -21,7 +23,6 @@ public class FilterListTest extends ApplicationTest {
 	private List_row section2 = new List_row();
 	private List_row section3 = new List_row();
 	private Controller controller;
-	
 	@Override
 	public void start(Stage stage) throws Exception {
     	FXMLLoader loader = new FXMLLoader();
@@ -147,6 +148,11 @@ public class FilterListTest extends ApplicationTest {
 		String enrolledResult = controller.print();
 		System.out.println(enrolledResult);
 	}
-	
+	@Test
+	public void testComparator() {
+		Comparator<List_row> b;
+		Controller.List_rowComparator temp = controller.new List_rowComparator();
+		temp.compare(section1, section2);
+	}	
 
 }
