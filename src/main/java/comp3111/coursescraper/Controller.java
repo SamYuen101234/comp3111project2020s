@@ -609,6 +609,7 @@ public class Controller {
     /**
      * Method to search all courses obtained from the user-inputed URL in the "Main" tab.
      * This method will be invoked when "All Courses Search" button in the "All Subject Search" tab is clicked.
+     * @exception InterruptedException if thread is interrupted
      */
     @FXML
     void allCoursesSearch() {

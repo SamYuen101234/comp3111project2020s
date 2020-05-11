@@ -1,5 +1,7 @@
 package comp3111.coursescraper;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URLEncoder;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -7,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.DomNodeList;
@@ -271,15 +274,19 @@ public class Scraper {
 	 * Method to scrape all subjects from the required URL
 	 * @param baseurl The baseurl of the website
 	 * @param term The term of the course
+	 * @exception IOException if URL is incorrect
+	 * @exception MalformedURLException if URL is incorrect
+	 * @exception FailingHttpStatusCodeException if URL is incorrect
 	 * @return list of all subjects from the baseurl and term
 	 */
-	public List<String> scrapeSubject(String baseurl, String term){
+	public List<String> scrapeSubject(String baseurl, String term) throws FailingHttpStatusCodeException, MalformedURLException, IOException{
 		HtmlPage mainPage;
 		try {
 			mainPage = client.getPage(baseurl + "/" + term + "/");
 		} catch(Exception e) {
 			return null;
 		}
+		mainPage = client.getPage(baseurl + "/" + term + "/");
 
 		List<?> subjectHTML = (List<?>) mainPage.getByXPath("//div[@class='depts']/a");
 
