@@ -310,6 +310,7 @@ public class Scraper {
 	 * @param baseurl The baseurl of the website
 	 * @param term The term of the course
 	 * @param sub The subject of the course
+	 * @exception IOException if URL is incorrect
 	 * @return List of all courses from the baseurl, term and subject
 	 */
 	public List<Course> scrape(String baseurl, String term, String sub) {
