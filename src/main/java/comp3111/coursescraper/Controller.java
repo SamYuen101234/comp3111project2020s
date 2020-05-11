@@ -67,7 +67,7 @@ import java.net.MalformedURLException;
 
 /** A class to control most of the action on the software 
  * 
- * @author Yuen Zhikun (zyuen), Lam Tsz Chun (tclamai)
+ * @author Yuen Zhikun (zyuen), Lam Tsz Chun (tclamai), Xie Yulong (yxiear)
  * @version 1.0
  */
 
