@@ -1,6 +1,7 @@
 package comp3111.coursescraper;
 
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -54,11 +55,15 @@ import java.util.Locale;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Vector;
+
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.HashSet;
 import javafx.util.Callback;
 import java.lang.Object;
+import java.net.MalformedURLException;
 
 /** A class to control most of the action on the software 
  * 
@@ -577,11 +582,25 @@ public class Controller {
     /**
      * Method to search all subjects obtained from the user-inputed URL in the "Main" tab.
      * This method will be invoked when "All Subject Search" button in the "All Subject Search" tab is clicked.
+     * @exception IOException if URL is incorrect
+	 * @exception MalformedURLException if URL is incorrect
+	 * @exception FailingHttpStatusCodeException if URL is incorrect
      */
     @FXML
     void allSubjectSearch() {
     	// Scrape all subjects from given URL and term
-    	subjects = scraper.scrapeSubject(textfieldURL.getText(), textfieldTerm.getText());
+    	try {
+			subjects = scraper.scrapeSubject(textfieldURL.getText(), textfieldTerm.getText());
+		} catch (FailingHttpStatusCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
     	// Record and display the total no. of subjects
     	// Display wrong web-page in console if return value is null
@@ -596,6 +615,9 @@ public class Controller {
      * Method to search all courses obtained from the user-inputed URL in the "Main" tab.
      * This method will be invoked when "All Courses Search" button in the "All Subject Search" tab is clicked.
      * @exception InterruptedException if thread is interrupted
+     * @exception IOException if URL is incorrect
+	 * @exception MalformedURLException if URL is incorrect
+	 * @exception FailingHttpStatusCodeException if URL is incorrect
      */
     @FXML
     void allCoursesSearch() {
@@ -603,7 +625,18 @@ public class Controller {
     	textAreaConsole.clear();
     	
     	// Scrape all subjects from given URL and term
-    	subjects = scraper.scrapeSubject(textfieldURL.getText(), textfieldTerm.getText());
+    	try {
+			subjects = scraper.scrapeSubject(textfieldURL.getText(), textfieldTerm.getText());
+		} catch (FailingHttpStatusCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	
     	// Create a new list if there wasn't any. Otherwise clear the current courses list
     	// Display wrong web-page in console if return value is null
