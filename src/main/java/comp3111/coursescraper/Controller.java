@@ -363,12 +363,14 @@ public class Controller {
     	{
     		String filter_console = scraper.printCourses(Filtered, false);
     		textAreaConsole.setText(filter_console);
+    		List_View(Filtered);
+
     	}else {
     		String search_console = scraper.printCourses(courses, false);
     		textAreaConsole.setText(search_console);
+    		List_View(courses);
     	}
-    	List_View(Filtered);
-    	
+    	    	
     }
     /** when select all button press, check all boxes.
      *  when de-select all button press, unclick all boxes
