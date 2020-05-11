@@ -397,6 +397,9 @@ public class Scraper {
 	/**
 	 * Method to scrape all tables corresponding to all subjects appeared in SFQ URL
 	 * @param baseurl The baseurl of the SFQ website
+	 * @exception IOException if URL is incorrect
+	 * @exception MalformedURLException if URL is incorrect
+	 * @exception FailingHttpStatusCodeException if URL is incorrect
 	 * @return a list of HtmlElement containing all tables corresponding to all subjects
 	 */
 	private List<HtmlElement> getAllSubjectsSFQTable(String baseurl){
