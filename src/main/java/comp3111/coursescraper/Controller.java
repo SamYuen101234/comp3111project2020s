@@ -628,14 +628,8 @@ public class Controller {
     	try {
 			subjects = scraper.scrapeSubject(textfieldURL.getText(), textfieldTerm.getText());
 		} catch (FailingHttpStatusCodeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
     	
     	// Create a new list if there wasn't any. Otherwise clear the current courses list
@@ -660,14 +654,14 @@ public class Controller {
 					List<Course> courseOfSubject = new Vector<Course>();
 					for (int i=0;i<subjects.size();++i) {		
 						try {
-		    				Thread.sleep(100); 
+		    				Thread.sleep(50); 
 		    			} catch(InterruptedException ex) {
 		    				Thread.currentThread().interrupt();
 		    			}
 						
 		    			courseOfSubject = scraper2.scrape(textfieldURL.getText(), textfieldTerm.getText(),subjects.get(i));
 		    			try {
-		    				Thread.sleep(100); 
+		    				Thread.sleep(50); 
 		    			} catch(InterruptedException ex) {
 		    				Thread.currentThread().interrupt();
 		    			}

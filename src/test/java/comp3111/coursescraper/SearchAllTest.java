@@ -2,10 +2,16 @@ package comp3111.coursescraper;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+
 import org.junit.Test;
 import org.junit.Before;
 
 import org.testfx.framework.junit.ApplicationTest;
+
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+
 import comp3111.coursescraper.Scraper;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
@@ -47,7 +53,18 @@ public class SearchAllTest extends ApplicationTest {
 
 	@Test
 	public void testScrapeSubjects() {
-		assertArrayEquals(subjectsList,scraper.scrapeSubject(baseURL,term).toArray());
+		try {
+			assertArrayEquals(subjectsList,scraper.scrapeSubject(baseURL,term).toArray());
+		} catch (FailingHttpStatusCodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		clickOn("#tabAllSubject");
 		clickOn("#allSubjectSearch");
 		TextArea t = (TextArea)s.lookup("#textAreaConsole");
