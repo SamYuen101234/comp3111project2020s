@@ -5,7 +5,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 
+
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -154,5 +157,23 @@ public class FilterListTest extends ApplicationTest {
 		Controller.List_rowComparator temp = controller.new List_rowComparator();
 		temp.compare(section1, section2);
 	}	
+	
+	@Test
+	public void testEnroll() {
+		clickOn("#tabMain");
+		clickOn("#buttonSearchCourses");
+		clickOn("#tabList");
+		TableView<List_row> table = (TableView<List_row>) s.lookup("#List_table");
+		ObservableList<List_row> filter_section = table.getItems();
+		filter_section.get(0).setSelect(true);
+		assert(filter_section.size()!=0);
+		Node enrol = from(table).lookup(".table-row-cell").nth(0).lookup(".table-cell").nth(4).lookup(".check-box:determinate").query();
+		clickOn(enrol);
+		filter_section.get(0).setSelect(false);
+		assert(filter_section.size()!=0);
+		enrol = from(table).lookup(".table-row-cell").nth(0).lookup(".table-cell").nth(4).lookup(".check-box:determinate").query();
+		clickOn(enrol);
+		
+	}
 
 }
